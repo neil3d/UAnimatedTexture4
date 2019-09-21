@@ -26,7 +26,7 @@ public class AnimatedTextureEditor : ModuleRules
 			new string[]
 			{
 				"Core",
-				// ... add other public dependencies that you statically link with here ...
+                "AnimatedTexture",
 			}
 			);
 			
@@ -36,9 +36,7 @@ public class AnimatedTextureEditor : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
-				// ... add private dependencies that you statically link with here ...	
+				"UnrealEd",
 			}
 			);
 		
