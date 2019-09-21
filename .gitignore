@@ -1,0 +1,24 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Visual Studio Files
+.vs
+*.VC.db
+*.VC.opendb
+
+# Unreal Files
+Binaries
+Intermediate
+Saved
+Build
