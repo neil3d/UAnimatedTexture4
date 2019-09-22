@@ -58,6 +58,10 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 		return nullptr;
 	}
 
+	AnimTexture->SizeX = 128;
+	AnimTexture->SizeY = 128;
+	AnimTexture->NumMips = 1;
+
 	// load gif file
 	ImportGIF(AnimTexture, Buffer, BufferEnd - Buffer);
 
