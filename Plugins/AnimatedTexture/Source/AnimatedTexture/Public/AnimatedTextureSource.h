@@ -1,4 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * Animated Texture from GIF file
+ *
+ * Created by Neil Fang
+ * GitHub Repo: https://github.com/neil3d/UnrealAnimatedTexturePlugin
+ * GitHub Page: http://neil3d.github.io
+ *
+*/
 
 #pragma once
 

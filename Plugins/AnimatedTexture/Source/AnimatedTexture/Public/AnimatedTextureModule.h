@@ -1,4 +1,11 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+/**
+ * Animated Texture from GIF file
+ *
+ * Created by Neil Fang
+ * GitHub Repo: https://github.com/neil3d/UnrealAnimatedTexturePlugin
+ * GitHub Page: http://neil3d.github.io
+ *
+*/
 
 #pragma once
 
