@@ -18,6 +18,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 	{
 		FTextureResource * RHIResource;
 		FGIFFrame* GIFFrame;
+		TArray<FColor>* Palette;
 	};
 
 	typedef TSharedPtr<FRenderCommandData, ESPMode::ThreadSafe> FCommandDataPtr;
@@ -25,7 +26,8 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 
 	CommandData->GIFFrame = &Frames[FrameIndex];
 	CommandData->RHIResource = RHIResource;
-	
+	CommandData->Palette = &Palette;
+
 	//-- Equeue command
 	ENQUEUE_RENDER_COMMAND(DecodeGIFFrameToTexture)(
 		[CommandData](FRHICommandListImmediate& RHICmdList)
@@ -46,12 +48,17 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 		}
 
 		//-- write texture
+		TArray<FColor>& Palette = *(CommandData->Palette);
+		FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
+
 		int32 TexW = Texture2DRHI->GetSizeX();
 		int32 TexH = Texture2DRHI->GetSizeY();
 
-		for (int y = 0; y < TexH; y++) {
-			for (int x = 0; x < TexW; x++) {
-				DestinationBuffer[y*TexW + x] = FColor::Cyan;
+		for (uint32 y = 0; y < GIFFrame.Height; y++) {
+			for (uint32 x = 0; x < GIFFrame.Width; x++) {
+				uint32 PixeIndex = y * GIFFrame.Width + x;
+
+				DestinationBuffer[(y + GIFFrame.OffsetY)*TexW + x + GIFFrame.OffsetX] = Palette[GIFFrame.PixelIndices[PixeIndex]];
 			}
 		}
 
