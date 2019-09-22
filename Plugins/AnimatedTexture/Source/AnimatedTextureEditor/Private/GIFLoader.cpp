@@ -1,6 +1,6 @@
 
-#include "gif_load/gif_load.h"
 #include "AnimatedGIFDecoder.h"
+#include "gif_load/gif_load.h" // from: https://github.com/hidefromkgb/gif_load
 
 extern "C"
 {
@@ -25,21 +25,25 @@ extern "C"
 
 		//-- import frame
 		int FrameIndex = whdr->ifrm;
-		UAnimatedGIFDecoder::FFrame& ImportFrame = OutGIF->GetFrame(whdr->ifrm);
+		
+		check(OutGIF->GetFrameCount() == whdr->nfrm);
+		check(FrameIndex >= 0 && FrameIndex < OutGIF->GetFrameCount());
+
+		FGIFFrame& Frame = OutGIF->GetFrame(FrameIndex);
 
 		//---- copy properties
-		ImportFrame.FrameWidth = whdr->frxd;
-		ImportFrame.FrameHeight = whdr->fryd;
-		ImportFrame.FrameOffsetX = whdr->frxo;
-		ImportFrame.FrameOffsetY = whdr->fryo;
+		Frame.Width = whdr->frxd;
+		Frame.Height = whdr->fryd;
+		Frame.OffsetX = whdr->frxo;
+		Frame.OffsetY = whdr->fryo;
 
-		ImportFrame.Time = whdr->time;
-		ImportFrame.iFrame = whdr->ifrm;
+		Frame.Time = whdr->time;
+		Frame.Index = whdr->ifrm;
 
 		//---- copy pixel data
-		int NumPixel = ImportFrame.FrameWidth*ImportFrame.FrameHeight;
-		ImportFrame.PixelIndices.Init(0, NumPixel);
-		memcpy(ImportFrame.PixelIndices.GetData(), whdr->bptr, NumPixel);
+		int NumPixel = Frame.Width*Frame.Height;
+		Frame.PixelIndices.Init(0, NumPixel);
+		memcpy(Frame.PixelIndices.GetData(), whdr->bptr, NumPixel);
 	}
 }
 

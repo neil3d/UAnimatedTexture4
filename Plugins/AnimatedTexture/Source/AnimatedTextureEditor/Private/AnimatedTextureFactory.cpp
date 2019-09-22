@@ -60,7 +60,6 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 		return nullptr;
 	}
 
-
 	// load gif file
 	UAnimatedTextureSource* GIFSource = ImportGIF(InParent, Buffer, BufferEnd - Buffer);
 	if (GIFSource) {

@@ -31,7 +31,7 @@ public:
 		TEnumAsByte<enum TextureAddress> AddressY;
 	
 public:
-	void SetAnimSource(UAnimatedTextureSource* AnimSource);
+	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
 	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
 
 	//~ Begin UTexture Interface.
@@ -40,6 +40,8 @@ public:
 	virtual FTextureResource* CreateResource() override;
 	virtual EMaterialValueType GetMaterialType() const override { return MCT_Texture2D; }
 	//~ End UTexture Interface.
+
+	virtual void PostLoad() override;
 
 protected:
 	UPROPERTY()

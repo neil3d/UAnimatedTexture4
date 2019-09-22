@@ -13,6 +13,39 @@
 #include "AnimatedTextureSource.h"
 #include "AnimatedGIFDecoder.generated.h"
 
+USTRUCT()
+struct FGIFFrame
+{
+	GENERATED_BODY()
+
+	//-- delay, frame number
+	UPROPERTY()
+		uint32 Time;
+
+	UPROPERTY()
+		uint32 Index;
+
+	//-- current frame dimensions and offset
+	UPROPERTY()
+		uint32 Width;
+
+	UPROPERTY()
+		uint32 Height;
+
+	UPROPERTY()
+		uint32 OffsetX;
+
+	UPROPERTY()
+		uint32 OffsetY;
+
+	//-- frame pixel indices or metadata      
+	UPROPERTY()
+		TArray<uint8>	PixelIndices;
+
+	FGIFFrame():Time(0),Index(0),Width(0),Height(0),OffsetX(0),OffsetY(0)
+	{}
+};
+
 /**
  * Animated GIF Data Storage & Runtime Decoder
  */
@@ -22,27 +55,12 @@ class ANIMATEDTEXTURE_API UAnimatedGIFDecoder : public UAnimatedTextureSource
 	GENERATED_BODY()
 
 public:
-	struct FFrame {
-		//-- delay, frame number
-		uint32 Time,
-			iFrame;
-		
-		//-- current frame dimensions and offset
-		uint32 FrameWidth,
-			FrameHeight;
-		uint32 FrameOffsetX,
-			FrameOffsetY;
-
-		//-- frame pixel indices or metadata      
-		TArray<uint8>	PixelIndices;
-	};
-
 	void Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeight, uint32 InPaletteSize, uint32 FrameCount);
 
 	int32 GetFrameCount() const {
 		return Frames.Num();
 	}
-	FFrame& GetFrame(int32 Index) {
+	FGIFFrame& GetFrame(int32 Index) {
 		return Frames[Index];
 	}
 
@@ -50,10 +68,19 @@ public:
 		return Palette;
 	}
 
+	virtual uint32 GetGlobalWidth() const override { return GlobalWidth; }
+	virtual uint32 GetGlobalHeight() const override { return GlobalHeight; }
+
 protected:
+	UPROPERTY()
 	uint32 GlobalWidth;
+
+	UPROPERTY()
 	uint32 GlobalHeight;
 
+	UPROPERTY()
 	TArray<FColor> Palette;
-	TArray<FFrame> Frames;
+
+	UPROPERTY()
+	TArray<FGIFFrame> Frames;
 };
