@@ -70,6 +70,7 @@ public:
 
 	virtual uint32 GetGlobalWidth() const override { return GlobalWidth; }
 	virtual uint32 GetGlobalHeight() const override { return GlobalHeight; }
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) override;
 
 protected:
 	UPROPERTY()

@@ -24,6 +24,8 @@ FTextureResource* UAnimatedTexture2D::CreateResource()
 
 void UAnimatedTexture2D::Tick(float DeltaTime)
 {
+	if (AnimSource && Resource)
+		AnimSource->DecodeFrameToRHI(Resource, 0);
 }
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {

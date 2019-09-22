@@ -11,9 +11,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "TextureResource.h"	// Engine
 #include "AnimatedTextureSource.generated.h"
-
-class FAnimatedTextureResource;
 
 /**
  * Abstract Animated Texture Source, including runtime decoder/decompresser
@@ -28,6 +27,6 @@ public:
 	virtual uint32 GetGlobalHeight() const { return 0; }
 
 	virtual bool TickAnim(float DeltaTime, int LastFrame, float FrameTime) { return false; }
-	virtual void DecodeFrameToRHI(FAnimatedTextureResource* RHIResource, int Frame) {}
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) {}
 
 };
