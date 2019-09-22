@@ -22,9 +22,8 @@ FTextureResource* UAnimatedTexture2D::CreateResource()
 	return new FAnimatedTextureResource(this);
 }
 
-void UAnimatedTexture2D::PostLoad()
+void UAnimatedTexture2D::Tick(float DeltaTime)
 {
-	Super::PostLoad();
 }
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {

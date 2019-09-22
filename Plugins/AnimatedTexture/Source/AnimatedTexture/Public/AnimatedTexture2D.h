@@ -10,16 +10,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/Texture.h"
+#include "Tickable.h"	// Engine
+#include "Engine/Texture.h"	// Engine
 #include "AnimatedTexture2D.generated.h"
 
 class UAnimatedTextureSource;
 
 /**
- * 
+ *
  */
 UCLASS(BlueprintType, Category = AnimatedTexture)
-class ANIMATEDTEXTURE_API UAnimatedTexture2D : public UTexture
+class ANIMATEDTEXTURE_API UAnimatedTexture2D : public UTexture, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -29,7 +30,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture, meta = (DisplayName = "Y-axis Tiling Method"), AssetRegistrySearchable, AdvancedDisplay)
 		TEnumAsByte<enum TextureAddress> AddressY;
-	
+
 public:
 	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
 	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
@@ -41,9 +42,32 @@ public:
 	virtual EMaterialValueType GetMaterialType() const override { return MCT_Texture2D; }
 	//~ End UTexture Interface.
 
-	virtual void PostLoad() override;
+	//~ Begin FTickableGameObject Interface.
+	virtual void Tick(float DeltaTime) override;
+	virtual bool IsTickable() const override
+	{
+		return true;
+	}
+	virtual TStatId GetStatId() const
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(UAnimatedTexture2D, STATGROUP_Tickables);
+	}
+	virtual bool IsTickableInEditor() const
+	{
+		return true;
+	}
+
+	virtual UWorld* GetTickableGameObjectWorld() const
+	{
+		return GetWorld();
+	}
+	//~ End FTickableGameObject Interface.
 
 protected:
 	UPROPERTY()
-	UAnimatedTextureSource* AnimSource;
+		UAnimatedTextureSource* AnimSource;
+
+	//-- AnimState
+	int CurrentFrame;
+	float FrameTime;
 };
