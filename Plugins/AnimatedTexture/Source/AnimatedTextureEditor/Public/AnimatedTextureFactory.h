@@ -40,5 +40,5 @@ public:
 	//~ End FReimportHandler Interface
 
 private:
-	UAnimatedTextureSource* ImportGIF(const uint8* Buffer, uint32 BufferSize);
+	UAnimatedTextureSource* ImportGIF(UObject * InParent, const uint8* Buffer, uint32 BufferSize);
 };

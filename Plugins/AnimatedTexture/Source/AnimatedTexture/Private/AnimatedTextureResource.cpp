@@ -13,14 +13,14 @@ FAnimatedTextureResource::FAnimatedTextureResource(UAnimatedTexture2D * InOwner)
 uint32 FAnimatedTextureResource::GetSizeX() const
 {
 	if (Owner && Owner->GetAnimSource())
-		return Owner->GetAnimSource()->GetImageWidth();
+		return Owner->GetAnimSource()->GetGlobalWidth();
 	return 2;
 }
 
 uint32 FAnimatedTextureResource::GetSizeY() const
 {
 	if (Owner && Owner->GetAnimSource())
-		return Owner->GetAnimSource()->GetImageHeight();
+		return Owner->GetAnimSource()->GetGlobalHeight();
 
 	return 2;
 }

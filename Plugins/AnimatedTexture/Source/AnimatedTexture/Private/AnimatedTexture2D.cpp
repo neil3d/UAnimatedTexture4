@@ -6,14 +6,14 @@
 float UAnimatedTexture2D::GetSurfaceWidth() const
 {
 	if (AnimSource)
-		return AnimSource->GetImageWidth();
+		return AnimSource->GetGlobalWidth();
 	return 2.0f;
 }
 
 float UAnimatedTexture2D::GetSurfaceHeight() const
 {
 	if (AnimSource)
-		return AnimSource->GetImageHeight();
+		return AnimSource->GetGlobalHeight();
 	return 2.0f;
 }
 

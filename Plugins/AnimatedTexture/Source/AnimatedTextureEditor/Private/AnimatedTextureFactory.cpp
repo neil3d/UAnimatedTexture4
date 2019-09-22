@@ -3,6 +3,7 @@
 #include "AnimatedTextureEditorModule.h"
 #include "AnimatedTexture2D.h"
 #include "AnimatedTextureSource.h"
+#include "AnimatedGIFDecoder.h"
 
 #include "EditorFramework/AssetImportData.h"	// Engine
 #include "Subsystems/ImportSubsystem.h"	// UnrealEd
@@ -61,7 +62,7 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 
 
 	// load gif file
-	UAnimatedTextureSource* GIFSource = ImportGIF(Buffer, BufferEnd - Buffer);
+	UAnimatedTextureSource* GIFSource = ImportGIF(InParent, Buffer, BufferEnd - Buffer);
 	if (GIFSource) {
 		AnimTexture->SetAnimSource(GIFSource);
 	}
@@ -106,7 +107,11 @@ int32 UAnimatedTextureFactory::GetPriority() const {
 	return ImportPriority;
 }
 
-UAnimatedTextureSource * UAnimatedTextureFactory::ImportGIF(const uint8 * Buffer, uint32 BufferSize)
+extern void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize);
+
+UAnimatedTextureSource * UAnimatedTextureFactory::ImportGIF(UObject * InParent, const uint8 * Buffer, uint32 BufferSize)
 {
-	return nullptr;
+	UAnimatedGIFDecoder* GIF = NewObject<UAnimatedGIFDecoder>(InParent);
+	LoadGIFBinary(GIF, Buffer, BufferSize);
+	return GIF;
 }
