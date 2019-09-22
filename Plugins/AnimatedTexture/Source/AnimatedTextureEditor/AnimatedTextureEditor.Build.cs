@@ -37,7 +37,9 @@ public class AnimatedTextureEditor : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"UnrealEd",
-			}
+                "RHI",
+                "RenderCore",
+            }
 			);
 		
 		

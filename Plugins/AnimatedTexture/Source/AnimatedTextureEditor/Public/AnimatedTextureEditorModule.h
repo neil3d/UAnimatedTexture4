@@ -13,3 +13,5 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 };
+
+DECLARE_LOG_CATEGORY_EXTERN(LogAnimTextureEditor, Log, All);
