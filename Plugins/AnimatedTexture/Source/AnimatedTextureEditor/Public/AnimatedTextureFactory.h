@@ -15,6 +15,7 @@
 #include "AnimatedTextureFactory.generated.h"
 
 class UAnimatedTexture2D;
+class UAnimatedTextureSource;
 
 /**
  * Import & Reimport Animated Texture Source, such as .gif file
@@ -39,5 +40,5 @@ public:
 	//~ End FReimportHandler Interface
 
 private:
-	void ImportGIF(UAnimatedTexture2D* TargetTexture, const uint8* Buffer, uint32 BufferSize);
+	UAnimatedTextureSource* ImportGIF(const uint8* Buffer, uint32 BufferSize);
 };

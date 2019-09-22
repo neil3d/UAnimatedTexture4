@@ -2,6 +2,7 @@
 #include "AnimatedTextureFactory.h"
 #include "AnimatedTextureEditorModule.h"
 #include "AnimatedTexture2D.h"
+#include "AnimatedTextureSource.h"
 
 #include "EditorFramework/AssetImportData.h"	// Engine
 #include "Subsystems/ImportSubsystem.h"	// UnrealEd
@@ -58,12 +59,16 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 		return nullptr;
 	}
 
-	AnimTexture->SizeX = 128;
-	AnimTexture->SizeY = 128;
-	AnimTexture->NumMips = 1;
 
 	// load gif file
-	ImportGIF(AnimTexture, Buffer, BufferEnd - Buffer);
+	UAnimatedTextureSource* GIFSource = ImportGIF(Buffer, BufferEnd - Buffer);
+	if (GIFSource) {
+		AnimTexture->SetAnimSource(GIFSource);
+	}
+	else {
+		UE_LOG(LogAnimTextureEditor, Error, TEXT("Import GIF FAILED, Name=%s."), *(Name.ToString()));
+		return nullptr;
+	}
 
 	//Replace the reference for the new texture with the existing one so that all current users still have valid references.
 	RefReplacer.Replace(AnimTexture);
@@ -74,11 +79,6 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 	AnimTexture->PostEditChange();
 
 	return AnimTexture;
-}
-
-
-void UAnimatedTextureFactory::ImportGIF(UAnimatedTexture2D* TargetTexture, const uint8* Buffer, uint32 BufferSize) {
-
 }
 
 bool UAnimatedTextureFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames) {
@@ -104,4 +104,9 @@ EReimportResult::Type UAnimatedTextureFactory::Reimport(UObject* Obj) {
 
 int32 UAnimatedTextureFactory::GetPriority() const {
 	return ImportPriority;
+}
+
+UAnimatedTextureSource * UAnimatedTextureFactory::ImportGIF(const uint8 * Buffer, uint32 BufferSize)
+{
+	return nullptr;
 }
