@@ -3,21 +3,21 @@
 
 #include "AnimatedTextureSource.h"
 
-bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & State)
+bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & AnimState)
 {
 	bool NextFrame = false;
-	float FrameDelay = GetFrameDelay(State.CurrentFrame);
-	State.FrameTime += DeltaTime;
+	float FrameDelay = GetFrameDelay(AnimState.CurrentFrame);
+	AnimState.FrameTime += DeltaTime;
 	
-	if (State.FrameTime > FrameDelay) {
-		State.CurrentFrame++;
-		State.FrameTime -= FrameDelay;
+	if (AnimState.FrameTime > FrameDelay) {
+		AnimState.CurrentFrame++;
+		AnimState.FrameTime -= FrameDelay;
 		NextFrame = true;
 
 		// loop
 		int NumFrame = GetFrameCount();
-		if (State.CurrentFrame >= NumFrame)
-			State.CurrentFrame = 0;
+		if (AnimState.CurrentFrame >= NumFrame)
+			AnimState.CurrentFrame = 0;
 	}
 
 	return NextFrame;

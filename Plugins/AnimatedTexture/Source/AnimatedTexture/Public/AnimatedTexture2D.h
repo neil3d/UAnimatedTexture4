@@ -63,9 +63,10 @@ public:
 	}
 	//~ End FTickableGameObject Interface.
 
+
 protected:
 	UPROPERTY()
 		UAnimatedTextureSource* AnimSource;
 
-	FAnmatedTextureState State;
+	FAnmatedTextureState AnimState;
 };

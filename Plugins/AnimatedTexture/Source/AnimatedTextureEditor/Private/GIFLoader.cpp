@@ -23,7 +23,7 @@ extern "C"
 		FGIFFrame& Frame = OutGIF->GetFrame(FrameIndex);
 
 		//-- copy properties
-		Frame.Time = whdr->time*0.01f;	// 1 GIF time units = 10 msec
+		Frame.Time = FMath::Abs(whdr->time*0.01f);	// 1 GIF time units = 10 msec, negative values for user input
 		Frame.Index = whdr->ifrm;
 		Frame.Width = whdr->frxd;
 		Frame.Height = whdr->fryd;

@@ -76,9 +76,9 @@ public:
 	virtual float GetFrameDelay(int FrameIndex) const override;
 	virtual int GetFrameCount() const override { return Frames.Num(); }
 
-	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) override;
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState) override;
 
-protected:
+public:
 	UPROPERTY()
 		uint32 GlobalWidth;
 
@@ -90,4 +90,8 @@ protected:
 
 	UPROPERTY()
 		TArray<FGIFFrame> Frames;
+
+public:
+	TArray<FColor>	FrameBuffer[2];
+	uint32 Last;
 };

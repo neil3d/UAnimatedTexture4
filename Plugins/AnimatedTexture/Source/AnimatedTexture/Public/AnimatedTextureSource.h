@@ -18,9 +18,7 @@ struct FAnmatedTextureState {
 	int CurrentFrame;
 	float FrameTime;
 
-	FAnmatedTextureState() :CurrentFrame(0), FrameTime(0) {
-
-	}
+	FAnmatedTextureState() :CurrentFrame(0), FrameTime(0) {}
 };
 
 /**
@@ -37,8 +35,7 @@ public:
 	virtual float GetFrameDelay(int FrameIndex) const { return 0.1f; }
 	virtual int GetFrameCount() const { return 1; }
 
-	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& State);
-	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) {}
-
+	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& AnimState);
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState) {}
 
 };

@@ -19,23 +19,21 @@ float UAnimatedTexture2D::GetSurfaceHeight() const
 
 FTextureResource* UAnimatedTexture2D::CreateResource()
 {
-	FTextureResource* Resource =  new FAnimatedTextureResource(this);
-	if (AnimSource)
-		AnimSource->DecodeFrameToRHI(Resource, 0);
-
-	return Resource;
+	FTextureResource* NewResource = new FAnimatedTextureResource(this);
+	return NewResource;
 }
 
 void UAnimatedTexture2D::Tick(float DeltaTime)
 {
 	if (AnimSource && Resource) {
-		if (AnimSource->TickAnim(DeltaTime, State))
-			AnimSource->DecodeFrameToRHI(Resource, State.CurrentFrame);
+		if (AnimSource->TickAnim(DeltaTime, AnimState))
+			AnimSource->DecodeFrameToRHI(Resource, AnimState);
 	}
 }
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	AnimSource = InAnimSource;
-
+	if (Resource)
+		AnimSource->DecodeFrameToRHI(Resource, AnimState);
 	UpdateResource();
 }
