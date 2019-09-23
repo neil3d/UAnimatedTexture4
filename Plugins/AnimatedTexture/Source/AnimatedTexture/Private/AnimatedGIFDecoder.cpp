@@ -1,14 +1,15 @@
 
 #include "AnimatedGIFDecoder.h"
+#include "AnimatedTextureModule.h"
 #include "RenderingThread.h"	// RenderCore
 
-void UAnimatedGIFDecoder::Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeight, uint32 InPaletteSize, uint32 FrameCount)
+void UAnimatedGIFDecoder::Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeight, uint8 InBackground, uint32 InFrameCount)
 {
 	GlobalWidth = InGlobalWidth;
 	GlobalHeight = InGlobalHeight;
+	Background = InBackground;
 
-	Palette.Init(FColor::Black, InPaletteSize);
-	Frames.Init(FGIFFrame(), FrameCount);
+	Frames.Init(FGIFFrame(), InFrameCount);
 }
 
 void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int FrameIndex)
@@ -18,7 +19,6 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 	{
 		FTextureResource * RHIResource;
 		FGIFFrame* GIFFrame;
-		TArray<FColor>* Palette;
 	};
 
 	typedef TSharedPtr<FRenderCommandData, ESPMode::ThreadSafe> FCommandDataPtr;
@@ -26,7 +26,6 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 
 	CommandData->GIFFrame = &Frames[FrameIndex];
 	CommandData->RHIResource = RHIResource;
-	CommandData->Palette = &Palette;
 
 	//-- Equeue command
 	ENQUEUE_RENDER_COMMAND(DecodeGIFFrameToTexture)(
@@ -43,22 +42,44 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int F
 		FColor* DestinationBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 		if (!DestinationBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Unable to lock texture for write"));
+			UE_LOG(LogAnimTexture, Warning, TEXT("Unable to lock texture for write"));
 			return;
 		}
 
 		//-- write texture
-		TArray<FColor>& Palette = *(CommandData->Palette);
 		FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
+		TArray<FColor>& Pal = GIFFrame.Palette;
 
-		int32 TexW = Texture2DRHI->GetSizeX();
-		int32 TexH = Texture2DRHI->GetSizeY();
+		uint32 TexW = Texture2DRHI->GetSizeX();
+		uint32 TexH = Texture2DRHI->GetSizeY();
+
+		uint32 Dest = TexW * GIFFrame.OffsetY + GIFFrame.OffsetX;
+		uint32 Src = 0;
+		uint32 Iter = GIFFrame.Interlacing ? 0 : 4;
+		uint32 Fin = GIFFrame.Interlacing ? 4 : 5;
+
+		FMemory::Memzero(DestinationBuffer, TexW*TexH * 4);
+
+		for (; Iter < Fin; Iter++) {
+			uint32 YOffset = 16U >> ((Iter > 1) ? Iter : 1);
+			for (uint32 Y = (8 >> Iter) & 7; Y < GIFFrame.Height; Y += YOffset) {
+				for (uint32 X = 0; X < GIFFrame.Width; X++) {
+					uint32 TexIndex = GIFFrame.Width*Y + X + Dest;
+					uint8 PixelIndex = GIFFrame.PixelIndices[Src];
+					if (PixelIndex == GIFFrame.TransparentIndex)
+						DestinationBuffer[TexIndex].A = 0;
+					else
+						DestinationBuffer[TexIndex] = Pal[PixelIndex];
+					Src++;
+				}// end of for(x)
+			}// end of for(y)
+		}// end of for(iter)
 
 		for (uint32 y = 0; y < GIFFrame.Height; y++) {
 			for (uint32 x = 0; x < GIFFrame.Width; x++) {
 				uint32 PixeIndex = y * GIFFrame.Width + x;
 
-				DestinationBuffer[(y + GIFFrame.OffsetY)*TexW + x + GIFFrame.OffsetX] = Palette[GIFFrame.PixelIndices[PixeIndex]];
+				DestinationBuffer[(y + GIFFrame.OffsetY)*TexW + x + GIFFrame.OffsetX] = Pal[GIFFrame.PixelIndices[PixeIndex]];
 			}
 		}
 

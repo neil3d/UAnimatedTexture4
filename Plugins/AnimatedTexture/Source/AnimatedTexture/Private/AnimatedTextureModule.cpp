@@ -2,6 +2,7 @@
 
 #include "AnimatedTextureModule.h"
 
+DEFINE_LOG_CATEGORY(LogAnimTexture);
 #define LOCTEXT_NAMESPACE "FAnimatedTextureModule"
 
 void FAnimatedTextureModule::StartupModule()
