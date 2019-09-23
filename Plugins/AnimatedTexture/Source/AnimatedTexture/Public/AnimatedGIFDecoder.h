@@ -67,15 +67,15 @@ class ANIMATEDTEXTURE_API UAnimatedGIFDecoder : public UAnimatedTextureSource
 public:
 	void Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeight, uint8 InBackground, uint32 InFrameCount);
 
-	int32 GetFrameCount() const {
-		return Frames.Num();
-	}
 	FGIFFrame& GetFrame(int32 Index) {
 		return Frames[Index];
 	}
 
 	virtual uint32 GetGlobalWidth() const override { return GlobalWidth; }
 	virtual uint32 GetGlobalHeight() const override { return GlobalHeight; }
+	virtual float GetFrameDelay(int FrameIndex) const override;
+	virtual int GetFrameCount() const override { return Frames.Num(); }
+
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) override;
 
 protected:

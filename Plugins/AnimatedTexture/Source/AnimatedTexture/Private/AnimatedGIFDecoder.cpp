@@ -12,6 +12,12 @@ void UAnimatedGIFDecoder::Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeigh
 	Frames.Init(FGIFFrame(), InFrameCount);
 }
 
+float UAnimatedGIFDecoder::GetFrameDelay(int FrameIndex) const
+{
+	const FGIFFrame& Frame = Frames[FrameIndex];
+	return Frame.Time;
+}
+
 void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, int FrameIndex)
 {
 	//-- Render Command Data

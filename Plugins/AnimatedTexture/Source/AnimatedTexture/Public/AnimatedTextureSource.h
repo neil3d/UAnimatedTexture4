@@ -14,6 +14,15 @@
 #include "TextureResource.h"	// Engine
 #include "AnimatedTextureSource.generated.h"
 
+struct FAnmatedTextureState {
+	int CurrentFrame;
+	float FrameTime;
+
+	FAnmatedTextureState() :CurrentFrame(0), FrameTime(0) {
+
+	}
+};
+
 /**
  * Abstract Animated Texture Source, including runtime decoder/decompresser
  */
@@ -25,8 +34,11 @@ class ANIMATEDTEXTURE_API UAnimatedTextureSource : public UObject
 public:
 	virtual uint32 GetGlobalWidth() const { return 0; }
 	virtual uint32 GetGlobalHeight() const { return 0; }
+	virtual float GetFrameDelay(int FrameIndex) const { return 0.1f; }
+	virtual int GetFrameCount() const { return 1; }
 
-	virtual bool TickAnim(float DeltaTime, int LastFrame, float FrameTime) { return false; }
+	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& State);
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, int Frame) {}
+
 
 };

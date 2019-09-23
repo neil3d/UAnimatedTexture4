@@ -12,9 +12,9 @@
 #include "CoreMinimal.h"
 #include "Tickable.h"	// Engine
 #include "Engine/Texture.h"	// Engine
-#include "AnimatedTexture2D.generated.h"
 
-class UAnimatedTextureSource;
+#include "AnimatedTextureSource.h"
+#include "AnimatedTexture2D.generated.h"
 
 /**
  *
@@ -67,7 +67,5 @@ protected:
 	UPROPERTY()
 		UAnimatedTextureSource* AnimSource;
 
-	//-- AnimState
-	int CurrentFrame;
-	float FrameTime;
+	FAnmatedTextureState State;
 };
