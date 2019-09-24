@@ -13,48 +13,58 @@
 #include "AnimatedTextureSource.h"
 #include "AnimatedGIFDecoder.generated.h"
 
-USTRUCT()
 struct FGIFFrame
 {
-	GENERATED_BODY()
-
-public:
-	UPROPERTY()
-		float Time;	// next frame delay in sec
-
-	UPROPERTY()
-		uint32 Index;	// 0-based index of the current frame
-
-	UPROPERTY()
-		uint32 Width;	// current frame width
-
-	UPROPERTY()
-		uint32 Height;	// current frame height
-
-	UPROPERTY()
-		uint32 OffsetX;	// current frame horizontal offset
-
-	UPROPERTY()
-		uint32 OffsetY;	// current frame vertical offset
-
-	UPROPERTY()
-		bool Interlacing;	// see: https://en.wikipedia.org/wiki/GIF#Interlacing
-
-	UPROPERTY()
-		uint8 Mode;	// next frame (sic next, not current) blending mode
-
-	UPROPERTY()
-		int16 TransparentIndex;	// 0-based transparent color index (or −1 when transparency is disabled)
-
-	UPROPERTY()
-		TArray<uint8> PixelIndices;	// pixel indices for the current frame
-
-	UPROPERTY()
-		TArray<FColor> Palette;	// the current palette
+	float Time;	// next frame delay in sec
+	uint32 Index;	// 0-based index of the current frame
+	uint32 Width;	// current frame width
+	uint32 Height;	// current frame height
+	uint32 OffsetX;	// current frame horizontal offset
+	uint32 OffsetY;	// current frame vertical offset
+	bool Interlacing;	// see: https://en.wikipedia.org/wiki/GIF#Interlacing
+	uint8 Mode;	// next frame (sic next, not current) blending mode
+	int16 TransparentIndex;	// 0-based transparent color index (or −1 when transparency is disabled)
+	TArray<uint8> PixelIndices;	// pixel indices for the current frame
+	TArray<FColor> Palette;	// the current palette
 
 	FGIFFrame() :Time(0), Index(0), Width(0), Height(0), OffsetX(0), OffsetY(0),
-		Interlacing(false),Mode(0),TransparentIndex(-1)
+		Interlacing(false), Mode(0), TransparentIndex(-1)
 	{}
+
+	// Serializer.
+	friend FArchive& operator<<(FArchive& Ar, FGIFFrame& Frm)
+	{
+		return Ar << Frm.Time << Frm.Index
+			<< Frm.Width << Frm.Height
+			<< Frm.OffsetX << Frm.OffsetY
+			<< Frm.Interlacing << Frm.Mode << Frm.TransparentIndex
+			<< Frm.PixelIndices
+			<< Frm.Palette;
+	}
+
+	bool Serialize(FArchive& Ar)
+	{
+		Ar << *this;
+		return true;
+	}
+
+	friend void operator<<(FStructuredArchive::FSlot Slot, FGIFFrame& Frm)
+	{
+		FStructuredArchive::FRecord Record = Slot.EnterRecord();
+		Record << NAMED_ITEM("Time", Frm.Time) << NAMED_ITEM("Index", Frm.Index) 
+			<< NAMED_ITEM("Width", Frm.Width) << NAMED_ITEM("Height", Frm.Height)
+			<< NAMED_ITEM("OffsetX", Frm.OffsetX) << NAMED_ITEM("OffsetY", Frm.OffsetY)
+			<< NAMED_ITEM("Interlacing", Frm.Interlacing) << NAMED_ITEM("Mode", Frm.Mode) << NAMED_ITEM("TransparentIndex", Frm.TransparentIndex)
+			<< NAMED_ITEM("PixelIndices", Frm.PixelIndices)
+			<< NAMED_ITEM("Palette", Frm.Palette)
+			;
+	}
+
+	bool Serialize(FStructuredArchive::FSlot Slot)
+	{
+		Slot << *this;
+		return true;
+	}
 };
 
 /**
@@ -79,6 +89,8 @@ public:
 
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState) override;
 
+	virtual void Serialize(FArchive& Ar) override;
+
 public:
 	UPROPERTY()
 		uint32 GlobalWidth;
@@ -89,8 +101,7 @@ public:
 	UPROPERTY()
 		uint8 Background;	// 0-based background color index for the current palette
 
-	UPROPERTY()
-		TArray<FGIFFrame> Frames;
+	TArray<FGIFFrame> Frames;
 
 public:
 	TArray<FColor>	FrameBuffer[2];

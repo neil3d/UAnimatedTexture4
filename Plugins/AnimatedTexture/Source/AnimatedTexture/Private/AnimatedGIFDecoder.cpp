@@ -183,3 +183,10 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 	}
 	);
 }
+
+void UAnimatedGIFDecoder::Serialize(FArchive & Ar)
+{
+	Super::Serialize(Ar);
+
+	Ar << Frames;
+}
