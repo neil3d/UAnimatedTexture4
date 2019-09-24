@@ -98,64 +98,33 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		uint32 DestPitch = 0;
 		FColor* SrcBuffer = PICT;
 		FColor* DestBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
-		if (!DestBuffer)
+		if (DestBuffer)
+		{
+			if (DestPitch == XDim * sizeof(FColor)) 
+			{
+				FMemory::Memcpy(DestBuffer, SrcBuffer, XDim*YDim * sizeof(FColor));
+			}
+			else 
+			{
+				// copy row by row
+				uint32 SrcPitch = XDim * sizeof(FColor);
+				for (uint32 y = 0; y < YDim; y++) 
+				{
+					FMemory::Memcpy(DestBuffer, SrcBuffer, XDim * sizeof(FColor));
+					DestBuffer += DestPitch;
+					SrcBuffer += SrcPitch;
+				}
+			}
+
+			RHIUnlockTexture2D(Texture2DRHI, 0, false);
+		}// end of if
+		else 
 		{
 			UE_LOG(LogAnimTexture, Warning, TEXT("Unable to lock texture for write"));
-			return;
-		}
-
-		if (DestPitch == XDim * sizeof(FColor)) {
-			FMemory::Memcpy(DestBuffer, SrcBuffer, XDim*YDim * sizeof(FColor));
-		}
-		else {
-			// copy row by row
-			uint32 SrcPitch = XDim * sizeof(FColor);
-			for (uint32 y = 0; y < YDim; y++) {
-				FMemory::Memcpy(DestBuffer, SrcBuffer, XDim * sizeof(FColor));
-				DestBuffer += DestPitch;
-				SrcBuffer += SrcPitch;
-			}
-		}
-
-		RHIUnlockTexture2D(Texture2DRHI, 0, false);
+		}// end of else
 
 		//-- frame blending
-		FColor* PICT2 = nullptr;
-		FColor* PREV2 = nullptr;
-		uint32 FrameXD = 0;
-		uint32 FrameYD = 0;
-		EGIF_Mode Mode;
-		if ((GIFFrame.Mode == GIF_PREV) && !Last)
-		{
-			FrameXD = XDim;
-			FrameYD = YDim;
-			Mode = GIF_BKGD;
-			DDest = 0;
-		}
-		else
-		{
-			Last = (GIFFrame.Mode == GIF_PREV) ? Last : GIFFrame.Index + 1;
-			PICT2 = ((GIFFrame.Mode == GIF_PREV) ? PICT : PREV);
-			PREV2 = ((GIFFrame.Mode == GIF_PREV) ? PREV : PICT);
-			for (uint32 x = XDim * YDim; x > 0; --x)
-				PICT2[x - 1] = PREV2[x - 1];
-		}
-
-		// cutting a hole for the next frame
-		if (GIFFrame.Mode == GIF_BKGD) 
-		{
-			FColor CLR;
-			if (GIFFrame.TransparentIndex >= 0) {
-				CLR = GIFFrame.Palette[GIFFrame.TransparentIndex];
-				CLR.A = 0;
-			}
-			else
-				CLR = GIFFrame.Palette[CommandData->Decoder->Background];
-
-			for (uint32 y = 0; y < FrameYD; y++)
-				for (uint32 x = 0; x < FrameXD; x++)
-					PICT[XDim* y + x + DDest] = CLR;
-		}
+	
 	}
 	);
 }

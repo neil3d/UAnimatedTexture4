@@ -44,7 +44,7 @@ public:
 		uint8 Mode;	// next frame (sic next, not current) blending mode
 
 	UPROPERTY()
-		uint8 TransparentIndex;	// 0-based transparent color index (or −1 when transparency is disabled)
+		int16 TransparentIndex;	// 0-based transparent color index (or −1 when transparency is disabled)
 
 	UPROPERTY()
 		TArray<uint8> PixelIndices;	// pixel indices for the current frame
