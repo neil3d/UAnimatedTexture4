@@ -30,8 +30,14 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 {
 	if (FrameBuffer[0].Num() != GlobalHeight * GlobalWidth) {
 		Last = 0;
+
+		FColor BGColor(0L);
+		const FGIFFrame& GIFFrame = Frames[0];
+		if (GIFFrame.IsTransparent())
+			BGColor = GIFFrame.Palette[Background];
+
 		for (int i = 0; i < 2; i++)
-			FrameBuffer[i].Init(FColor(0, 0, 0, 0), GlobalHeight*GlobalWidth);
+			FrameBuffer[i].Init(BGColor, GlobalHeight*GlobalWidth);
 	}
 
 	//-- Render Command Data
@@ -60,12 +66,14 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		if (!Texture2DRHI)
 			return;
 
-		FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
-		FColor* PICT = CommandData->Decoder->FrameBuffer[0].GetData();
-		FColor* PREV = CommandData->Decoder->FrameBuffer[1].GetData();;
+		const FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
 		uint32& Last = CommandData->Decoder->Last;
 
-		TArray<FColor>& Pal = GIFFrame.Palette;
+		FColor* PICT = CommandData->Decoder->FrameBuffer[Last].GetData();
+		FColor* PREV = CommandData->Decoder->FrameBuffer[(Last + 1) % 2].GetData();;
+		uint32 Background = CommandData->Decoder->Background;
+
+		const TArray<FColor>& Pal = GIFFrame.Palette;
 
 		uint32 XDim = Texture2DRHI->GetSizeX();
 		uint32 YDim = Texture2DRHI->GetSizeY();
@@ -76,19 +84,20 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		uint32 Iter = GIFFrame.Interlacing ? 0 : 4;
 		uint32 Fin = !Iter ? 4 : 5;
 
-		for (; Iter < Fin; Iter++) {
+		for (; Iter < Fin; Iter++) // interlacing support
+		{
 			uint32 YOffset = 16U >> ((Iter > 1) ? Iter : 1);
 
-			for (uint32 Y = (8 >> Iter) & 7; Y < GIFFrame.Height; Y += YOffset) 
+			for (uint32 Y = (8 >> Iter) & 7; Y < GIFFrame.Height; Y += YOffset)
 			{
-				for (uint32 X = 0; X < GIFFrame.Width; X++) 
+				for (uint32 X = 0; X < GIFFrame.Width; X++)
 				{
 					uint32 TexIndex = XDim * Y + X + DDest;
 					uint8 PixelIndex = GIFFrame.PixelIndices[Src];
-					PICT[TexIndex] = Pal[PixelIndex];
 
-					if (PixelIndex == GIFFrame.TransparentIndex) 
-						PICT[TexIndex].A = 0;
+					if (PixelIndex != GIFFrame.TransparentIndex)
+						PICT[TexIndex] = Pal[PixelIndex];
+
 					Src++;
 				}// end of for(x)
 			}// end of for(y)
@@ -100,31 +109,59 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		FColor* DestBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 		if (DestBuffer)
 		{
-			if (DestPitch == XDim * sizeof(FColor)) 
+			if (DestPitch == XDim * sizeof(FColor))
 			{
 				FMemory::Memcpy(DestBuffer, SrcBuffer, XDim*YDim * sizeof(FColor));
 			}
-			else 
+			else
 			{
 				// copy row by row
 				uint32 SrcPitch = XDim * sizeof(FColor);
-				for (uint32 y = 0; y < YDim; y++) 
+				for (uint32 y = 0; y < YDim; y++)
 				{
 					FMemory::Memcpy(DestBuffer, SrcBuffer, XDim * sizeof(FColor));
 					DestBuffer += DestPitch;
 					SrcBuffer += SrcPitch;
-				}
-			}
+				}// end of for
+			}// end of else
 
 			RHIUnlockTexture2D(Texture2DRHI, 0, false);
 		}// end of if
-		else 
+		else
 		{
 			UE_LOG(LogAnimTexture, Warning, TEXT("Unable to lock texture for write"));
 		}// end of else
 
 		//-- frame blending
-	
+		switch (GIFFrame.Mode)
+		{
+		case GIF_NONE:
+		case GIF_CURR:
+			break;
+		case GIF_BKGD:	// restore background
+		{
+			FColor BGColor(0L);
+
+			if (!GIFFrame.IsTransparent())
+				BGColor = GIFFrame.Palette[Background];
+
+			for (uint32 Y = 0; Y < GIFFrame.Height; Y++)
+			{
+				for (uint32 X = 0; X < GIFFrame.Width; X++)
+				{
+					PICT[XDim * Y + X + DDest] = BGColor;
+				}// end of for(x)
+			}// end of for(y)
+		}
+		break;
+		case GIF_PREV:	// restore prevous frame
+			Last = (Last + 1) % 2;
+			break;
+		default:
+			UE_LOG(LogAnimTexture, Warning, TEXT("Unknown GIF Mode"));
+			break;
+		}//end of switch
+
 	}
 	);
 }

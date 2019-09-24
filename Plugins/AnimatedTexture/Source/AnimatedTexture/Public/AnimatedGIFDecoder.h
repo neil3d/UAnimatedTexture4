@@ -54,6 +54,10 @@ public:
 
 	FGIFFrame() :Time(0), Index(0), Width(0), Height(0), OffsetX(0), OffsetY(0)
 	{}
+
+	bool IsTransparent() const {
+		return TransparentIndex != -1;
+	}
 };
 
 /**
