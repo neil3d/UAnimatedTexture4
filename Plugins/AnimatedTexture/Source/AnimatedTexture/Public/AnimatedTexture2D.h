@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture, meta = (DisplayName = "Y-axis Tiling Method"), AssetRegistrySearchable, AdvancedDisplay)
 		TEnumAsByte<enum TextureAddress> AddressY;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
+		float DefaultFrameDelay = 1.0f / 10;	// used while Frame.Delay==0
+
 public:
 	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
 	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
