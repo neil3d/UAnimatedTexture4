@@ -33,6 +33,8 @@ void UAnimatedTexture2D::Tick(float DeltaTime)
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	AnimSource = InAnimSource;
+	AnimState = FAnmatedTextureState();
+
 	if (Resource)
 		AnimSource->DecodeFrameToRHI(Resource, AnimState);
 	UpdateResource();

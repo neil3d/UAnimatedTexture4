@@ -77,11 +77,11 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		const TArray<FColor>& Pal = GIFFrame.Palette;
 
-		uint32 XDim = Texture2DRHI->GetSizeX();
-		uint32 YDim = Texture2DRHI->GetSizeY();
+		uint32 TexWidth = Texture2DRHI->GetSizeX();
+		uint32 TexHeight = Texture2DRHI->GetSizeY();
 
 		//-- decode to frame buffer
-		uint32 DDest = XDim * GIFFrame.OffsetY + GIFFrame.OffsetX;
+		uint32 DDest = TexWidth * GIFFrame.OffsetY + GIFFrame.OffsetX;
 		uint32 Src = 0;
 		uint32 Iter = GIFFrame.Interlacing ? 0 : 4;
 		uint32 Fin = !Iter ? 4 : 5;
@@ -94,7 +94,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			{
 				for (uint32 X = 0; X < GIFFrame.Width; X++)
 				{
-					uint32 TexIndex = XDim * Y + X + DDest;
+					uint32 TexIndex = TexWidth * Y + X + DDest;
 					uint8 PixelIndex = GIFFrame.PixelIndices[Src];
 
 					if (PixelIndex != GIFFrame.TransparentIndex)
@@ -111,17 +111,17 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		FColor* DestBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 		if (DestBuffer)
 		{
-			if (DestPitch == XDim * sizeof(FColor))
+			if (DestPitch == TexWidth * sizeof(FColor))
 			{
-				FMemory::Memcpy(DestBuffer, SrcBuffer, XDim*YDim * sizeof(FColor));
+				FMemory::Memcpy(DestBuffer, SrcBuffer, TexWidth*TexHeight * sizeof(FColor));
 			}
 			else
 			{
 				// copy row by row
-				uint32 SrcPitch = XDim * sizeof(FColor);
-				for (uint32 y = 0; y < YDim; y++)
+				uint32 SrcPitch = TexWidth * sizeof(FColor);
+				for (uint32 y = 0; y < TexHeight; y++)
 				{
-					FMemory::Memcpy(DestBuffer, SrcBuffer, XDim * sizeof(FColor));
+					FMemory::Memcpy(DestBuffer, SrcBuffer, TexWidth * sizeof(FColor));
 					DestBuffer += DestPitch;
 					SrcBuffer += SrcPitch;
 				}// end of for
@@ -156,9 +156,10 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			uint32 BGHeight = GIFFrame.Height;
 			uint32 XDest = DDest;
 			
-			if (CommandData->FirstFrame) {
-				BGWidth = XDim;
-				BGHeight = YDim;
+			if (CommandData->FirstFrame) 
+			{
+				BGWidth = TexWidth;
+				BGHeight = TexHeight;
 				XDest = 0;
 			}
 
@@ -166,7 +167,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			{
 				for (uint32 X = 0; X < BGWidth; X++)
 				{
-					PICT[XDim * Y + X + XDest] = BGColor;
+					PICT[TexWidth * Y + X + XDest] = BGColor;
 				}// end of for(x)
 			}// end of for(y)
 		}
