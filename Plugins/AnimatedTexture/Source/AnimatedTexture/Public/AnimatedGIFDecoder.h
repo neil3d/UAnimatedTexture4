@@ -87,7 +87,7 @@ public:
 	virtual float GetFrameDelay(int FrameIndex) const override;
 	virtual int GetFrameCount() const override { return Frames.Num(); }
 
-	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState) override;
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency) override;
 
 	virtual void Serialize(FArchive& Ar) override;
 

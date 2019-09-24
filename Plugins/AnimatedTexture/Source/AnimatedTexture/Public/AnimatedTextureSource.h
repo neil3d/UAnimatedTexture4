@@ -36,6 +36,6 @@ public:
 	virtual int GetFrameCount() const { return 1; }
 
 	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& AnimState, float DefaultFrameDelay);
-	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState) {}
+	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency) {}
 
 };

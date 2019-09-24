@@ -27,8 +27,38 @@ void UAnimatedTexture2D::Tick(float DeltaTime)
 {
 	if (AnimSource && Resource) {
 		if (AnimSource->TickAnim(DeltaTime, AnimState, DefaultFrameDelay))
-			AnimSource->DecodeFrameToRHI(Resource, AnimState);
+			AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
+}
+
+void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	bool RequiresNotifyMaterials = false;
+	bool ResetAnimState = false;
+
+	UProperty* PropertyThatChanged = PropertyChangedEvent.Property;
+	if (PropertyThatChanged)
+	{
+		const FName PropertyName = PropertyThatChanged->GetFName();
+
+		static const FName SupportsTransparencyName = GET_MEMBER_NAME_CHECKED(UAnimatedTexture2D, SupportsTransparency);
+
+		if (PropertyName == SupportsTransparencyName)
+		{
+			RequiresNotifyMaterials = true;
+			ResetAnimState = true;
+		}
+	}// end of if(prop is valid)
+
+	if (ResetAnimState)
+	{
+		AnimState = FAnmatedTextureState();
+		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
+	}
+	if(RequiresNotifyMaterials)
+		NotifyMaterials();
 }
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
@@ -36,6 +66,6 @@ void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	AnimState = FAnmatedTextureState();
 
 	if (Resource)
-		AnimSource->DecodeFrameToRHI(Resource, AnimState);
+		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	UpdateResource();
 }

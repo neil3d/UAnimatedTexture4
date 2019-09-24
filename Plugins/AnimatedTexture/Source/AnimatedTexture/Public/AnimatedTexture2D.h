@@ -32,6 +32,9 @@ public:
 		TEnumAsByte<enum TextureAddress> AddressY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
+		bool SupportsTransparency = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
 		float DefaultFrameDelay = 1.0f / 10;	// used while Frame.Delay==0
 
 public:
@@ -65,6 +68,13 @@ public:
 		return GetWorld();
 	}
 	//~ End FTickableGameObject Interface.
+
+	//~ Begin UObject Interface.
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif // WITH_EDITOR
+
+	//~ End UObject Interface.
 
 
 protected:

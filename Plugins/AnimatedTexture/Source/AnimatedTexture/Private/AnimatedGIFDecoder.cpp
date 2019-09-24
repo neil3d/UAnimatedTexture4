@@ -26,14 +26,14 @@ float UAnimatedGIFDecoder::GetFrameDelay(int FrameIndex) const
 	return Frame.Time;
 }
 
-void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnmatedTextureState& AnimState)
+void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency)
 {
 	if (FrameBuffer[0].Num() != GlobalHeight * GlobalWidth) {
 		Last = 0;
 
 		FColor BGColor(0L);
 		const FGIFFrame& GIFFrame = Frames[0];
-		if (GIFFrame.TransparentIndex == -1)
+		if (!SupportsTransparency || GIFFrame.TransparentIndex == -1)
 			BGColor = GIFFrame.Palette[Background];
 
 		for (int i = 0; i < 2; i++)
@@ -47,6 +47,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		FGIFFrame* GIFFrame;
 		UAnimatedGIFDecoder* Decoder;
 		bool FirstFrame;
+		bool SupportsTransparency;
 	};
 
 	typedef TSharedPtr<FRenderCommandData, ESPMode::ThreadSafe> FCommandDataPtr;
@@ -56,6 +57,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 	CommandData->RHIResource = RHIResource;
 	CommandData->Decoder = this;
 	CommandData->FirstFrame = AnimState.CurrentFrame == 0;
+	CommandData->SupportsTransparency = SupportsTransparency;
 
 	//-- Equeue command
 	ENQUEUE_RENDER_COMMAND(DecodeGIFFrameToTexture)(
@@ -70,6 +72,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		const FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
 		uint32& Last = CommandData->Decoder->Last;
+		bool SupportsTransparency = CommandData->SupportsTransparency;
 
 		FColor* PICT = CommandData->Decoder->FrameBuffer[Last].GetData();
 		FColor* PREV = CommandData->Decoder->FrameBuffer[(Last + 1) % 2].GetData();;
@@ -97,7 +100,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 					uint32 TexIndex = TexWidth * Y + X + DDest;
 					uint8 PixelIndex = GIFFrame.PixelIndices[Src];
 
-					if (PixelIndex != GIFFrame.TransparentIndex)
+					if (!SupportsTransparency || PixelIndex != GIFFrame.TransparentIndex)
 						PICT[TexIndex] = Pal[PixelIndex];
 
 					Src++;
@@ -149,7 +152,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		{
 			FColor BGColor(0L);
 
-			if (GIFFrame.TransparentIndex == -1)
+			if (!SupportsTransparency || GIFFrame.TransparentIndex == -1)
 				BGColor = GIFFrame.Palette[Background];
 
 			uint32 BGWidth = GIFFrame.Width;
