@@ -1,19 +1,33 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "AnimatedTextureEditorModule.h"
+#include "AnimatedTextureThumbnailRenderer.h"
+#include "AnimatedTexture2D.h"
+
+#include "Misc/CoreDelegates.h"	// Core
+#include "ThumbnailRendering/ThumbnailManager.h"	// UnrealEd
+
 
 DEFINE_LOG_CATEGORY(LogAnimTextureEditor);
 #define LOCTEXT_NAMESPACE "FAnimatedTextureEditorModule"
 
 void FAnimatedTextureEditorModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	FCoreDelegates::OnPostEngineInit.AddRaw(this, &FAnimatedTextureEditorModule::OnPostEngineInit);
 }
+
+void FAnimatedTextureEditorModule::OnPostEngineInit()
+{
+	UThumbnailManager::Get().RegisterCustomRenderer(UAnimatedTexture2D::StaticClass(), UAnimatedTextureThumbnailRenderer::StaticClass());
+}
+
 
 void FAnimatedTextureEditorModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	if (UObjectInitialized())
+	{
+		UThumbnailManager::Get().UnregisterCustomRenderer(UAnimatedTexture2D::StaticClass());
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
