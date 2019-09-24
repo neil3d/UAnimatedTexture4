@@ -33,7 +33,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		FColor BGColor(0L);
 		const FGIFFrame& GIFFrame = Frames[0];
-		if (GIFFrame.IsTransparent())
+		if (GIFFrame.TransparentIndex == -1)
 			BGColor = GIFFrame.Palette[Background];
 
 		for (int i = 0; i < 2; i++)
@@ -46,6 +46,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		FTextureResource * RHIResource;
 		FGIFFrame* GIFFrame;
 		UAnimatedGIFDecoder* Decoder;
+		bool FirstFrame;
 	};
 
 	typedef TSharedPtr<FRenderCommandData, ESPMode::ThreadSafe> FCommandDataPtr;
@@ -54,6 +55,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 	CommandData->GIFFrame = &Frames[AnimState.CurrentFrame];
 	CommandData->RHIResource = RHIResource;
 	CommandData->Decoder = this;
+	CommandData->FirstFrame = AnimState.CurrentFrame == 0;
 
 	//-- Equeue command
 	ENQUEUE_RENDER_COMMAND(DecodeGIFFrameToTexture)(
@@ -133,7 +135,12 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		}// end of else
 
 		//-- frame blending
-		switch (GIFFrame.Mode)
+		EGIF_Mode Mode = (EGIF_Mode)GIFFrame.Mode;
+
+		if (CommandData->FirstFrame)	// loop restart
+			Mode = GIF_BKGD;
+
+		switch (Mode)
 		{
 		case GIF_NONE:
 		case GIF_CURR:
@@ -142,14 +149,24 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		{
 			FColor BGColor(0L);
 
-			if (!GIFFrame.IsTransparent())
+			if (GIFFrame.TransparentIndex == -1)
 				BGColor = GIFFrame.Palette[Background];
 
-			for (uint32 Y = 0; Y < GIFFrame.Height; Y++)
+			uint32 BGWidth = GIFFrame.Width;
+			uint32 BGHeight = GIFFrame.Height;
+			uint32 XDest = DDest;
+			
+			if (CommandData->FirstFrame) {
+				BGWidth = XDim;
+				BGHeight = YDim;
+				XDest = 0;
+			}
+
+			for (uint32 Y = 0; Y < BGHeight; Y++)
 			{
-				for (uint32 X = 0; X < GIFFrame.Width; X++)
+				for (uint32 X = 0; X < BGWidth; X++)
 				{
-					PICT[XDim * Y + X + DDest] = BGColor;
+					PICT[XDim * Y + X + XDest] = BGColor;
 				}// end of for(x)
 			}// end of for(y)
 		}

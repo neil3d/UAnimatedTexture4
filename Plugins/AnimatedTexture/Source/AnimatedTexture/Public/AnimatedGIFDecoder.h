@@ -52,12 +52,9 @@ public:
 	UPROPERTY()
 		TArray<FColor> Palette;	// the current palette
 
-	FGIFFrame() :Time(0), Index(0), Width(0), Height(0), OffsetX(0), OffsetY(0)
+	FGIFFrame() :Time(0), Index(0), Width(0), Height(0), OffsetX(0), OffsetY(0),
+		Interlacing(false),Mode(0),TransparentIndex(-1)
 	{}
-
-	bool IsTransparent() const {
-		return TransparentIndex != -1;
-	}
 };
 
 /**
