@@ -57,6 +57,7 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 		AnimState = FAnmatedTextureState();
 		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
+
 	if(RequiresNotifyMaterials)
 		NotifyMaterials();
 }

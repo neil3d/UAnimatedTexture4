@@ -103,7 +103,7 @@ public:
 
 	TArray<FGIFFrame> Frames;
 
-public:
+protected:
 	TArray<FColor>	FrameBuffer[2];
-	uint32 Last;
+	uint32 LastFrame;
 };

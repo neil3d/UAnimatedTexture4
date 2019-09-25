@@ -29,7 +29,7 @@ float UAnimatedGIFDecoder::GetFrameDelay(int FrameIndex) const
 void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency)
 {
 	if (FrameBuffer[0].Num() != GlobalHeight * GlobalWidth) {
-		Last = 0;
+		LastFrame = 0;
 
 		FColor BGColor(0L);
 		const FGIFFrame& GIFFrame = Frames[0];
@@ -71,12 +71,12 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			return;
 
 		const FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
-		uint32& Last = CommandData->Decoder->Last;
+		uint32& InLastFrame = CommandData->Decoder->LastFrame;
 		bool SupportsTransparency = CommandData->SupportsTransparency;
 
-		FColor* PICT = CommandData->Decoder->FrameBuffer[Last].GetData();
-		FColor* PREV = CommandData->Decoder->FrameBuffer[(Last + 1) % 2].GetData();;
-		uint32 Background = CommandData->Decoder->Background;
+		FColor* PICT = CommandData->Decoder->FrameBuffer[InLastFrame].GetData();
+		FColor* PREV = CommandData->Decoder->FrameBuffer[(InLastFrame + 1) % 2].GetData();;
+		uint32 InBackground = CommandData->Decoder->Background;
 
 		const TArray<FColor>& Pal = GIFFrame.Palette;
 
@@ -153,7 +153,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			FColor BGColor(0L);
 
 			if (!SupportsTransparency || GIFFrame.TransparentIndex == -1)
-				BGColor = GIFFrame.Palette[Background];
+				BGColor = GIFFrame.Palette[InBackground];
 
 			uint32 BGWidth = GIFFrame.Width;
 			uint32 BGHeight = GIFFrame.Height;
@@ -176,7 +176,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		}
 		break;
 		case GIF_PREV:	// restore prevous frame
-			Last = (Last + 1) % 2;
+			InLastFrame = (InLastFrame + 1) % 2;
 			break;
 		default:
 			UE_LOG(LogAnimTexture, Warning, TEXT("Unknown GIF Mode"));
