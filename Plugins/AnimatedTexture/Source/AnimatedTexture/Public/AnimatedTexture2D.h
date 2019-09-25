@@ -38,6 +38,33 @@ public:
 		float DefaultFrameDelay = 1.0f / 10;	// used while Frame.Delay==0
 
 public:
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		void Play();
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		void PlayFromStart();
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		void Stop();
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		bool IsPlaying() const { return bPlaying; }
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		void SetLooping(bool bNewLooping) { bLooping = bNewLooping; }
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		bool IsLooping() const { return bLooping; }
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		void SetPlayRate(float NewRate) { PlayRate=NewRate; }
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		float GetPlayRate() const { return PlayRate; }
+
+	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
+		float GetAnimationLength() const;
+
 	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
 	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
 
@@ -76,10 +103,18 @@ public:
 
 	//~ End UObject Interface.
 
-
 protected:
 	UPROPERTY()
 		UAnimatedTextureSource* AnimSource;
+
+	UPROPERTY()
+		float PlayRate = 1.0f;
+
+	UPROPERTY()
+		bool bPlaying = true;
+
+	UPROPERTY()
+		bool bLooping = true;
 
 	FAnmatedTextureState AnimState;
 };

@@ -31,6 +31,8 @@ void UAnimatedTexture2D::Tick(float DeltaTime)
 	}
 }
 
+
+#if WITH_EDITOR
 void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -61,6 +63,15 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 	if(RequiresNotifyMaterials)
 		NotifyMaterials();
 }
+#endif // WITH_EDITOR
+
+float UAnimatedTexture2D::GetAnimationLength() const
+{
+	if (AnimSource)
+		return AnimSource->GetTotalDuration();
+
+	return 0.0f;
+}
 
 void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	AnimSource = InAnimSource;
@@ -69,4 +80,20 @@ void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	if (Resource)
 		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	UpdateResource();
+}
+
+void UAnimatedTexture2D::Play()
+{
+	bPlaying = true;
+}
+
+void UAnimatedTexture2D::PlayFromStart()
+{
+	AnimState = FAnmatedTextureState();
+	bPlaying = true;
+}
+
+void UAnimatedTexture2D::Stop()
+{
+	bPlaying = false;
 }
