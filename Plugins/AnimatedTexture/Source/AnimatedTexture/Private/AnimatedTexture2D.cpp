@@ -25,8 +25,11 @@ FTextureResource* UAnimatedTexture2D::CreateResource()
 
 void UAnimatedTexture2D::Tick(float DeltaTime)
 {
+	if (!bPlaying)
+		return;
+
 	if (AnimSource && Resource) {
-		if (AnimSource->TickAnim(DeltaTime, AnimState, DefaultFrameDelay))
+		if (AnimSource->TickAnim(DeltaTime*PlayRate, AnimState, DefaultFrameDelay, bLooping))
 			AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
 }
@@ -60,7 +63,7 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
 
-	if(RequiresNotifyMaterials)
+	if (RequiresNotifyMaterials)
 		NotifyMaterials();
 }
 #endif // WITH_EDITOR

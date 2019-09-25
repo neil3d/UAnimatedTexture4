@@ -3,7 +3,7 @@
 
 #include "AnimatedTextureSource.h"
 
-bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & AnimState, float DefaultFrameDelay)
+bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & AnimState, float DefaultFrameDelay, bool bLooping)
 {
 	bool NextFrame = false;
 	float FrameDelay = GetFrameDelay(AnimState.CurrentFrame);
@@ -18,7 +18,7 @@ bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & An
 		float N = FMath::TruncToFloat(AnimState.FrameTime / Duration);
 		AnimState.FrameTime -= N * Duration;
 	}
-	
+
 	// step to next frame
 	if (AnimState.FrameTime > FrameDelay) {
 		AnimState.CurrentFrame++;
@@ -28,7 +28,7 @@ bool UAnimatedTextureSource::TickAnim(float DeltaTime, FAnmatedTextureState & An
 		// loop
 		int NumFrame = GetFrameCount();
 		if (AnimState.CurrentFrame >= NumFrame)
-			AnimState.CurrentFrame = 0;
+			AnimState.CurrentFrame = bLooping ? 0 : NumFrame - 1;
 	}
 
 	return NextFrame;

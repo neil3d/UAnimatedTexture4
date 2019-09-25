@@ -37,7 +37,7 @@ public:
 	virtual float GetTotalDuration() const { return 0.0f; }
 
 
-	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& AnimState, float DefaultFrameDelay);
+	virtual bool TickAnim(float DeltaTime, FAnmatedTextureState& AnimState, float DefaultFrameDelay, bool bLooping);
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency) {}
 
 };

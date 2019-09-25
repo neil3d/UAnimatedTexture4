@@ -57,7 +57,7 @@ public:
 		bool IsLooping() const { return bLooping; }
 
 	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
-		void SetPlayRate(float NewRate) { PlayRate=NewRate; }
+		void SetPlayRate(float NewRate) { PlayRate = NewRate; }
 
 	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
 		float GetPlayRate() const { return PlayRate; }
@@ -79,7 +79,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool IsTickable() const override
 	{
-		return true;
+		return bPlaying;
 	}
 	virtual TStatId GetStatId() const
 	{
