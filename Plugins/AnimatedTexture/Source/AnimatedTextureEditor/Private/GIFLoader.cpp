@@ -58,4 +58,5 @@ extern "C"
 void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize)
 {
 	GIF_Load((void*)Buffer, BufferSize, GIFFrameLoader, 0, (void*)OutGIF, 0L);
+	OutGIF->Import_Finished();
 }

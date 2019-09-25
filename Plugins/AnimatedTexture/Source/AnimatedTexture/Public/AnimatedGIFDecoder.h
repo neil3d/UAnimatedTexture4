@@ -51,7 +51,7 @@ struct FGIFFrame
 	friend void operator<<(FStructuredArchive::FSlot Slot, FGIFFrame& Frm)
 	{
 		FStructuredArchive::FRecord Record = Slot.EnterRecord();
-		Record << NAMED_ITEM("Time", Frm.Time) << NAMED_ITEM("Index", Frm.Index) 
+		Record << NAMED_ITEM("Time", Frm.Time) << NAMED_ITEM("Index", Frm.Index)
 			<< NAMED_ITEM("Width", Frm.Width) << NAMED_ITEM("Height", Frm.Height)
 			<< NAMED_ITEM("OffsetX", Frm.OffsetX) << NAMED_ITEM("OffsetY", Frm.OffsetY)
 			<< NAMED_ITEM("Interlacing", Frm.Interlacing) << NAMED_ITEM("Mode", Frm.Mode) << NAMED_ITEM("TransparentIndex", Frm.TransparentIndex)
@@ -77,6 +77,7 @@ class ANIMATEDTEXTURE_API UAnimatedGIFDecoder : public UAnimatedTextureSource
 
 public:
 	void Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeight, uint8 InBackground, uint32 InFrameCount);
+	void Import_Finished();
 
 	FGIFFrame& GetFrame(int32 Index) {
 		return Frames[Index];
@@ -86,6 +87,8 @@ public:
 	virtual uint32 GetGlobalHeight() const override { return GlobalHeight; }
 	virtual float GetFrameDelay(int FrameIndex) const override;
 	virtual int GetFrameCount() const override { return Frames.Num(); }
+	virtual float GetTotalDuration() const { return Duration; }
+
 
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency) override;
 
@@ -93,13 +96,16 @@ public:
 
 public:
 	UPROPERTY()
-		uint32 GlobalWidth;
+		uint32 GlobalWidth = 0;
 
 	UPROPERTY()
-		uint32 GlobalHeight;
+		uint32 GlobalHeight = 0;
 
 	UPROPERTY()
-		uint8 Background;	// 0-based background color index for the current palette
+		uint8 Background = 0;	// 0-based background color index for the current palette
+
+	UPROPERTY()
+		float Duration = 0.0f;
 
 	TArray<FGIFFrame> Frames;
 

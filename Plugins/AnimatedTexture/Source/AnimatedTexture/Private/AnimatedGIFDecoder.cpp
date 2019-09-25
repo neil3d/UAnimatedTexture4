@@ -20,6 +20,13 @@ void UAnimatedGIFDecoder::Import_Init(uint32 InGlobalWidth, uint32 InGlobalHeigh
 	Frames.Init(FGIFFrame(), InFrameCount);
 }
 
+void UAnimatedGIFDecoder::Import_Finished()
+{
+	Duration = 0.0f;
+	for (const auto& Frm : Frames)
+		Duration += Frm.Time;
+}
+
 float UAnimatedGIFDecoder::GetFrameDelay(int FrameIndex) const
 {
 	const FGIFFrame& Frame = Frames[FrameIndex];
