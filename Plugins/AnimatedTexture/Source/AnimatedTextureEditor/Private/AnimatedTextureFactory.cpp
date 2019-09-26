@@ -81,31 +81,6 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 	return AnimTexture;
 }
 
-bool UAnimatedTextureFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames) {
-	UAnimatedTexture2D* pTex = Cast<UAnimatedTexture2D>(Obj);
-	if (pTex) {
-		pTex->AssetImportData->ExtractFilenames(OutFilenames);
-		return true;
-	}
-	return false;
-}
-
-void UAnimatedTextureFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths) {
-	UAnimatedTexture2D* pTex = Cast<UAnimatedTexture2D>(Obj);
-	if (pTex && ensure(NewReimportPaths.Num() == 1))
-	{
-		pTex->AssetImportData->UpdateFilenameOnly(NewReimportPaths[0]);
-	}
-}
-
-EReimportResult::Type UAnimatedTextureFactory::Reimport(UObject* Obj) {
-	return EReimportResult::Succeeded;
-}
-
-int32 UAnimatedTextureFactory::GetPriority() const {
-	return ImportPriority;
-}
-
 extern void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize);
 
 UAnimatedTextureSource * UAnimatedTextureFactory::ImportGIF(UObject * InParent, const uint8 * Buffer, uint32 BufferSize)
