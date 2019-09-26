@@ -5,4 +5,4 @@
 * Animated Texture can be used in UMG and Material
 * Playback API
 
-![DEMO](./Docs/Demo01.png)
+![DEMO](./Docs/Demo.gif)
