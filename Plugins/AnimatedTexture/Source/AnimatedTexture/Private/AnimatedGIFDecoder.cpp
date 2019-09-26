@@ -77,18 +77,20 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		if (!Texture2DRHI)
 			return;
 
-		const FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
+		FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
 		uint32& InLastFrame = CommandData->Decoder->LastFrame;
 		bool SupportsTransparency = CommandData->SupportsTransparency;
 
 		FColor* PICT = CommandData->Decoder->FrameBuffer[InLastFrame].GetData();
-		FColor* PREV = CommandData->Decoder->FrameBuffer[(InLastFrame + 1) % 2].GetData();;
 		uint32 InBackground = CommandData->Decoder->Background;
 
-		const TArray<FColor>& Pal = GIFFrame.Palette;
+		TArray<FColor>& Pal = GIFFrame.Palette;
 
 		uint32 TexWidth = Texture2DRHI->GetSizeX();
 		uint32 TexHeight = Texture2DRHI->GetSizeY();
+
+		if (SupportsTransparency && GIFFrame.TransparentIndex != -1)
+			Pal[GIFFrame.TransparentIndex].A = 0;
 
 		//-- decode to frame buffer
 		uint32 DDest = TexWidth * GIFFrame.OffsetY + GIFFrame.OffsetX;
@@ -105,10 +107,9 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 				for (uint32 X = 0; X < GIFFrame.Width; X++)
 				{
 					uint32 TexIndex = TexWidth * Y + X + DDest;
-					uint8 PixelIndex = GIFFrame.PixelIndices[Src];
+					uint8 ColorIndex = GIFFrame.PixelIndices[Src];
 
-					if (!SupportsTransparency || PixelIndex != GIFFrame.TransparentIndex)
-						PICT[TexIndex] = Pal[PixelIndex];
+					PICT[TexIndex] = Pal[ColorIndex];
 
 					Src++;
 				}// end of for(x)
@@ -159,14 +160,23 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		{
 			FColor BGColor(0L);
 
-			if (!SupportsTransparency || GIFFrame.TransparentIndex == -1)
+			if (SupportsTransparency)
+			{
+				if(GIFFrame.TransparentIndex == -1)
+					BGColor = GIFFrame.Palette[InBackground];
+				else
+					BGColor = GIFFrame.Palette[GIFFrame.TransparentIndex];
+			}
+			else
+			{
 				BGColor = GIFFrame.Palette[InBackground];
+			}
 
 			uint32 BGWidth = GIFFrame.Width;
 			uint32 BGHeight = GIFFrame.Height;
 			uint32 XDest = DDest;
-			
-			if (CommandData->FirstFrame) 
+
+			if (CommandData->FirstFrame)
 			{
 				BGWidth = TexWidth;
 				BGHeight = TexHeight;
@@ -190,6 +200,8 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			break;
 		}//end of switch
 
+		if (SupportsTransparency && GIFFrame.TransparentIndex != -1)
+			Pal[GIFFrame.TransparentIndex].A = 255;
 	}
 	);
 }
