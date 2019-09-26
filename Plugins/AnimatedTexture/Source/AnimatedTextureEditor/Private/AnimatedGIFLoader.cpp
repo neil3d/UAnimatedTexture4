@@ -6,7 +6,8 @@
 
 extern "C"
 {
-	void GIFFrameLoader(void *data, struct GIF_WHDR *whdr) {
+	void GIFFrameLoader(void *data, struct GIF_WHDR *whdr) 
+	{
 		UAnimatedGIFDecoder* OutGIF = (UAnimatedGIFDecoder*)data;
 
 		//-- init on first frame
@@ -44,13 +45,13 @@ extern "C"
 
 		//-- copy pal
 		int PaletteSize = whdr->clrs;
-		Frame.Palette.Init(FColor::Black, PaletteSize);
-		for (int i = 0; i < PaletteSize; i++) {
+		Frame.Palette.Init(FColor(0, 0, 0, 255), PaletteSize);
+		for (int i = 0; i < PaletteSize; i++) 
+		{
 			FColor& uc = Frame.Palette[i];
 			uc.R = whdr->cpal[i].R;
 			uc.G = whdr->cpal[i].G;
 			uc.B = whdr->cpal[i].B;
-			uc.A = 255;
 		}// end of for
 	}
 }// end of "C"

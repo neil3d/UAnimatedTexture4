@@ -89,9 +89,7 @@ public:
 	virtual int GetFrameCount() const override { return Frames.Num(); }
 	virtual float GetTotalDuration() const { return Duration; }
 
-
 	virtual void DecodeFrameToRHI(FTextureResource* RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency) override;
-
 	virtual void Serialize(FArchive& Ar) override;
 
 public:

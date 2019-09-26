@@ -79,7 +79,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool IsTickable() const override
 	{
-		return bPlaying;
+		return true;
 	}
 	virtual TStatId GetStatId() const
 	{
