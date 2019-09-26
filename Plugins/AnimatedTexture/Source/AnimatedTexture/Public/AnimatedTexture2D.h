@@ -37,6 +37,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
 		float DefaultFrameDelay = 1.0f / 10;	// used while Frame.Delay==0
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
+		float PlayRate = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimatedTexture)
+		bool bLooping = true;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
 		void Play();
@@ -108,13 +114,7 @@ protected:
 		UAnimatedTextureSource* AnimSource;
 
 	UPROPERTY()
-		float PlayRate = 1.0f;
-
-	UPROPERTY()
 		bool bPlaying = true;
-
-	UPROPERTY()
-		bool bLooping = true;
 
 	FAnmatedTextureState AnimState;
 };

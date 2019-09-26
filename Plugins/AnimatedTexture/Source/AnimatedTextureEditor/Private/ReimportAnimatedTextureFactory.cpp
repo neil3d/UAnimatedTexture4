@@ -6,7 +6,7 @@
 #include "HAL/FileManager.h"	// Core
 #include "EditorFramework/AssetImportData.h"	// Engine
 
-bool UReimportAnimatedTextureFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames) 
+bool UReimportAnimatedTextureFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
 {
 	UAnimatedTexture2D* pTex = Cast<UAnimatedTexture2D>(Obj);
 	if (pTex) {
@@ -16,7 +16,7 @@ bool UReimportAnimatedTextureFactory::CanReimport(UObject* Obj, TArray<FString>&
 	return false;
 }
 
-void UReimportAnimatedTextureFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths) 
+void UReimportAnimatedTextureFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths)
 {
 	UAnimatedTexture2D* pTex = Cast<UAnimatedTexture2D>(Obj);
 	if (pTex && ensure(NewReimportPaths.Num() == 1))
@@ -25,7 +25,7 @@ void UReimportAnimatedTextureFactory::SetReimportPaths(UObject* Obj, const TArra
 	}
 }
 
-EReimportResult::Type UReimportAnimatedTextureFactory::Reimport(UObject* Obj) 
+EReimportResult::Type UReimportAnimatedTextureFactory::Reimport(UObject* Obj)
 {
 	if (!Obj || !Obj->IsA(UAnimatedTexture2D::StaticClass()))
 	{
@@ -47,10 +47,24 @@ EReimportResult::Type UReimportAnimatedTextureFactory::Reimport(UObject* Obj)
 		return EReimportResult::Failed;
 	}
 
+	enum TextureAddress AddressX = pTex->AddressX;
+	enum TextureAddress AddressY = pTex->AddressY;
+	float PlayRate = pTex->PlayRate;
+	bool SupportsTransparency = pTex->SupportsTransparency;
+	float DefaultFrameDelay = pTex->DefaultFrameDelay;
+	bool bLooping = pTex->bLooping;
+
 	bool OutCanceled = false;
 	if (ImportObject(pTex->GetClass(), pTex->GetOuter(), *pTex->GetName(), RF_Public | RF_Standalone, ResolvedSourceFilePath, nullptr, OutCanceled) != nullptr)
 	{
 		pTex->AssetImportData->Update(ResolvedSourceFilePath);
+
+		pTex->AddressX = AddressX;
+		pTex->AddressY = AddressY;
+		pTex->PlayRate = PlayRate;
+		pTex->SupportsTransparency = SupportsTransparency;
+		pTex->DefaultFrameDelay = DefaultFrameDelay;
+		pTex->bLooping = bLooping;
 
 		// Try to find the outer package so we can dirty it up
 		if (pTex->GetOuter())
@@ -76,7 +90,7 @@ EReimportResult::Type UReimportAnimatedTextureFactory::Reimport(UObject* Obj)
 	return EReimportResult::Succeeded;
 }
 
-int32 UReimportAnimatedTextureFactory::GetPriority() const 
+int32 UReimportAnimatedTextureFactory::GetPriority() const
 {
 	return ImportPriority;
 }
