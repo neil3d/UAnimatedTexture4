@@ -40,7 +40,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		FColor BGColor(0L);
 		const FGIFFrame& GIFFrame = Frames[0];
-		if (!SupportsTransparency || GIFFrame.TransparentIndex == -1)
+		if (!SupportsTransparency)
 			BGColor = GIFFrame.Palette[Background];
 
 		for (int i = 0; i < 2; i++)
@@ -89,9 +89,6 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		uint32 TexWidth = Texture2DRHI->GetSizeX();
 		uint32 TexHeight = Texture2DRHI->GetSizeY();
 
-		if (SupportsTransparency && GIFFrame.TransparentIndex != -1)
-			Pal[GIFFrame.TransparentIndex].A = 0;
-
 		//-- decode to frame buffer
 		uint32 DDest = TexWidth * GIFFrame.OffsetY + GIFFrame.OffsetX;
 		uint32 Src = 0;
@@ -109,7 +106,13 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 					uint32 TexIndex = TexWidth * Y + X + DDest;
 					uint8 ColorIndex = GIFFrame.PixelIndices[Src];
 
-					PICT[TexIndex] = Pal[ColorIndex];
+					if (ColorIndex != GIFFrame.TransparentIndex)
+						PICT[TexIndex] = Pal[ColorIndex];
+					else
+					{
+						int a = 0;
+						a++;
+					}
 
 					Src++;
 				}// end of for(x)
@@ -148,7 +151,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		//-- frame blending
 		EGIF_Mode Mode = (EGIF_Mode)GIFFrame.Mode;
 
-		if (CommandData->FirstFrame)	// loop restart
+		if (Mode == GIF_PREV && CommandData->FirstFrame)	// loop restart
 			Mode = GIF_BKGD;
 
 		switch (Mode)
@@ -162,10 +165,11 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 			if (SupportsTransparency)
 			{
-				if(GIFFrame.TransparentIndex == -1)
+				if (GIFFrame.TransparentIndex == -1)
 					BGColor = GIFFrame.Palette[InBackground];
 				else
 					BGColor = GIFFrame.Palette[GIFFrame.TransparentIndex];
+				BGColor.A = 0;
 			}
 			else
 			{
@@ -200,8 +204,6 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 			break;
 		}//end of switch
 
-		if (SupportsTransparency && GIFFrame.TransparentIndex != -1)
-			Pal[GIFFrame.TransparentIndex].A = 255;
 	}
 	);
 }

@@ -1,5 +1,6 @@
 
 #include "AnimatedGIFDecoder.h"
+#include "AnimatedTextureEditorModule.h"
 
 #define GIF_MGET(m,s,a,c) if (c) m = (uint8*)FMemory::Malloc(s); else FMemory::Free(m);
 #include "gif_load/gif_load.h" // from: https://github.com/hidefromkgb/gif_load
@@ -29,6 +30,8 @@ extern "C"
 		else
 			Frame.Time = (-whdr->time - 1)*0.01f;
 
+		/** [TODO:] the frame is assumed to be inside global bounds,
+				however it might exceed them in some GIFs; fix me. **/
 		Frame.Index = whdr->ifrm;
 		Frame.Width = whdr->frxd;
 		Frame.Height = whdr->fryd;
@@ -58,6 +61,10 @@ extern "C"
 
 void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize)
 {
-	GIF_Load((void*)Buffer, BufferSize, GIFFrameLoader, 0, (void*)OutGIF, 0L);
+	int Ret = GIF_Load((void*)Buffer, BufferSize, GIFFrameLoader, 0, (void*)OutGIF, 0L);
 	OutGIF->Import_Finished();
+
+	if (Ret < 0) {
+		UE_LOG(LogAnimTextureEditor, Warning, TEXT("gif format error."));
+	}
 }

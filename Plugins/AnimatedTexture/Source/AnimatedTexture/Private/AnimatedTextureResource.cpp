@@ -41,6 +41,9 @@ void FAnimatedTextureResource::InitRHI()
 	TextureRHI->SetName(Owner->GetFName());
 
 	RHIUpdateTextureReference(Owner->TextureReference.TextureReferenceRHI, TextureRHI);
+
+	if (Owner)
+		Owner->UpdateFirstFrame();
 }
 
 void FAnimatedTextureResource::ReleaseRHI()

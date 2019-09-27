@@ -73,6 +73,7 @@ public:
 
 	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
 	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
+	void UpdateFirstFrame();
 
 	//~ Begin UTexture Interface.
 	virtual float GetSurfaceWidth() const override;
@@ -106,7 +107,7 @@ public:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif // WITH_EDITOR
-
+	
 	//~ End UObject Interface.
 
 protected:

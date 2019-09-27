@@ -85,6 +85,15 @@ void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
 	UpdateResource();
 }
 
+void UAnimatedTexture2D::UpdateFirstFrame()
+{
+	if (AnimSource && Resource) 
+	{
+		AnimState = FAnmatedTextureState();
+		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
+	}
+}
+
 void UAnimatedTexture2D::Play()
 {
 	bPlaying = true;
