@@ -125,17 +125,20 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		FColor* DestBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 		if (DestBuffer)
 		{
+			uint32 MaxRow = TexHeight;
+
 			if (DestPitch == TexWidth * sizeof(FColor))
 			{
-				FMemory::Memcpy(DestBuffer, SrcBuffer, TexWidth*TexHeight * sizeof(FColor));
+				FMemory::Memcpy(DestBuffer, SrcBuffer, DestPitch * MaxRow);
 			}
 			else
 			{
 				// copy row by row
 				uint32 SrcPitch = TexWidth * sizeof(FColor);
-				for (uint32 y = 0; y < TexHeight; y++)
+				uint32 Pitch = FMath::Min(DestPitch, SrcPitch);
+				for (uint32 y = 0; y < MaxRow; y++)
 				{
-					FMemory::Memcpy(DestBuffer, SrcBuffer, TexWidth * sizeof(FColor));
+					FMemory::Memcpy(DestBuffer, SrcBuffer, Pitch);
 					DestBuffer += DestPitch;
 					SrcBuffer += SrcPitch;
 				}// end of for
