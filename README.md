@@ -1,8 +1,13 @@
-# UE4 Plugin: Animated Texture with GIF Importer
+# Animated Texture with GIF Importer
 
-* Import Animated GIF as a Texture
-* Support Transparent GIF
-* Animated Texture can be used in UMG and Material
-* Playback API
+This plugin allows you to import animated GIF into your Unreal Engine 4 project as a new AnimatedTexture asset type.
 
 ![DEMO](./Docs/Demo.gif)
+
+## Features
+
+* Import Animated GIF as a Texture, supports animation, transparency, interlace, etc
+* Editing in default Texture Editor
+* Supports UMG Image widget and Material
+* Playback API
+
