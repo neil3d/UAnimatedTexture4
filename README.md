@@ -11,6 +11,10 @@ This plugin allows you to import animated GIF into your Unreal Engine 4 project 
 * Supports UMG Image widget and Material
 * Playback API
 
+## Compatibility
+
+The plugin should work on all platforms the Unreal Engine 4 supports, but it has not been tested on every platform.
+
 ![DEMO](./Docs/Demo_UMG.png)
 
 ![DEMO](./Docs/Demo_Mtl.png)
