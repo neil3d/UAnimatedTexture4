@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "0.1.0",
 	"FriendlyName": "Animated Texture with GIF Importer",
-	"Description": "Animated Texture, importing GIF",
+	"Description": "Import Animated GIF as a new AnimtedTexture asset type",
 	"Category": "Rendering",
 	"CreatedBy": "neil3d",
 	"CreatedByURL": "http://neil3d.github.io",
@@ -11,7 +11,7 @@
 	"MarketplaceURL": "",
 	"SupportURL": "http://neil3d.github.io",
 	"CanContainContent": false,
-	"IsBetaVersion": true,
+	"IsBetaVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
