@@ -33,14 +33,14 @@ float UAnimatedGIFDecoder::GetFrameDelay(int FrameIndex) const
 	return Frame.Time;
 }
 
-void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnmatedTextureState& AnimState, bool SupportsTransparency)
+void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnmatedTextureState& AnimState, bool InSupportsTransparency)
 {
 	if (FrameBuffer[0].Num() != GlobalHeight * GlobalWidth) {
 		LastFrame = 0;
 
 		FColor BGColor(0L);
 		const FGIFFrame& GIFFrame = Frames[0];
-		if (!SupportsTransparency)
+		if (!InSupportsTransparency)
 			BGColor = GIFFrame.Palette[Background];
 
 		for (int i = 0; i < 2; i++)
@@ -64,7 +64,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 	CommandData->RHIResource = RHIResource;
 	CommandData->Decoder = this;
 	CommandData->FirstFrame = AnimState.CurrentFrame == 0;
-	CommandData->SupportsTransparency = SupportsTransparency;
+	CommandData->SupportsTransparency = InSupportsTransparency;
 
 	//-- Equeue command
 	ENQUEUE_RENDER_COMMAND(DecodeGIFFrameToTexture)(
@@ -79,7 +79,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		FGIFFrame& GIFFrame = *(CommandData->GIFFrame);
 		uint32& InLastFrame = CommandData->Decoder->LastFrame;
-		bool SupportsTransparency = CommandData->SupportsTransparency;
+		bool bSupportsTransparency = CommandData->SupportsTransparency;
 
 		FColor* PICT = CommandData->Decoder->FrameBuffer[InLastFrame].GetData();
 		uint32 InBackground = CommandData->Decoder->Background;
@@ -166,7 +166,7 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 		{
 			FColor BGColor(0L);
 
-			if (SupportsTransparency)
+			if (bSupportsTransparency)
 			{
 				if (GIFFrame.TransparentIndex == -1)
 					BGColor = GIFFrame.Palette[InBackground];
