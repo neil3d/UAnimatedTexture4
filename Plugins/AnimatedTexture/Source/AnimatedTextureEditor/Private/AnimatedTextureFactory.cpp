@@ -1,3 +1,4 @@
+// Copyright 2019 Neil Fang. All Rights Reserved.
 
 #include "AnimatedTextureFactory.h"
 #include "AnimatedTextureEditorModule.h"

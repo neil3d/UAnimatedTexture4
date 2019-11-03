@@ -1,3 +1,4 @@
+// Copyright 2019 Neil Fang. All Rights Reserved.
 
 #include "AnimatedTextureThumbnailRenderer.h"
 #include "AnimatedTexture2D.h"

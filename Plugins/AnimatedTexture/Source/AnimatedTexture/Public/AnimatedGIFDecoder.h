@@ -1,4 +1,6 @@
 ﻿/**
+ * Copyright 2019 Neil Fang. All Rights Reserved.
+ *
  * Animated Texture from GIF file
  *
  * Created by Neil Fang

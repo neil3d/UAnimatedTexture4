@@ -1,3 +1,4 @@
+// Copyright 2019 Neil Fang. All Rights Reserved.
 
 #include "AnimatedTexture2D.h"
 #include "AnimatedTextureSource.h"
