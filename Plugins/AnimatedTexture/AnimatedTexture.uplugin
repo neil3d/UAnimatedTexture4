@@ -17,12 +17,28 @@
     {
       "Name": "AnimatedTexture",
       "Type": "Runtime",
-      "LoadingPhase": "Default"
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Android",
+        "IOS",
+        "Mac",
+        "Win32",
+        "Win64",
+        "Linux"
+      ]
     },
     {
       "Name": "AnimatedTextureEditor",
       "Type": "Editor",
-      "LoadingPhase": "Default"
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Android",
+        "IOS",
+        "Mac",
+        "Win32",
+        "Win64",
+        "Linux"
+      ]
     }
   ]
 }
