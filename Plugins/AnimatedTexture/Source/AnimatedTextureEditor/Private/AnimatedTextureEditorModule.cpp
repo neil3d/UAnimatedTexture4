@@ -1,4 +1,5 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 2019 Neil Fang. All Rights Reserved.
+
 
 #include "AnimatedTextureEditorModule.h"
 #include "AnimatedTextureThumbnailRenderer.h"

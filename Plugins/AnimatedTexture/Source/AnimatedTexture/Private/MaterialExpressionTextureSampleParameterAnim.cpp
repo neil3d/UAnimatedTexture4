@@ -1,3 +1,5 @@
+// Copyright 2019 Neil Fang. All Rights Reserved.
+
 #include "MaterialExpressionTextureSampleParameterAnim.h"
 #include "AnimatedTexture2D.h"
 
