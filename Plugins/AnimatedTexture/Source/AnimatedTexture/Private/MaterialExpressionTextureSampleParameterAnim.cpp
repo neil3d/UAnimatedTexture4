@@ -48,7 +48,7 @@ void UMaterialExpressionTextureSampleParameterAnim::GetCaption(TArray<FString>& 
 }
 #endif // WITH_EDITOR
 
-bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InTexture)
+bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InTexture, FString& OutMessage)
 {
 	bool Result = false;
 	if (InTexture)
@@ -74,15 +74,17 @@ bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InT
 		{
 			Result = true;
 		}
+
+		if (!Result)
+			OutMessage = TEXT("Invalid texture type");
 	}
+	else
+	{
+		OutMessage = TEXT("NULL Textue");
+	}
+
 	return Result;
 }
-
-const TCHAR* UMaterialExpressionTextureSampleParameterAnim::GetRequirements()
-{
-	return TEXT("Requires AnimatedTexture2D");
-}
-
 
 void UMaterialExpressionTextureSampleParameterAnim::SetDefaultTexture()
 {
