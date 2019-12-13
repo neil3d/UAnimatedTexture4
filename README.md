@@ -1,5 +1,7 @@
 # Animated Texture with GIF Importer
 
+**中文文档:** [https://neil3d.github.io/coding/anim-texture.html](https://neil3d.github.io/coding/anim-texture.html)
+----
 This plugin allows you to import animated GIF into your Unreal Engine 4 project as a new AnimatedTexture asset type.
 
 ![DEMO](./Docs/Demo.gif)
