@@ -12,6 +12,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "AnimatedTextureSource.h"
 #include "AnimatedGIFDecoder.generated.h"
 
@@ -50,17 +51,32 @@ struct FGIFFrame
 		return true;
 	}
 
+#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION <= 23
 	friend void operator<<(FStructuredArchive::FSlot Slot, FGIFFrame& Frm)
 	{
 		FStructuredArchive::FRecord Record = Slot.EnterRecord();
-		Record << NAMED_ITEM("Time", Frm.Time) << NAMED_ITEM("Index", Frm.Index)
-			<< NAMED_ITEM("Width", Frm.Width) << NAMED_ITEM("Height", Frm.Height)
-			<< NAMED_ITEM("OffsetX", Frm.OffsetX) << NAMED_ITEM("OffsetY", Frm.OffsetY)
-			<< NAMED_ITEM("Interlacing", Frm.Interlacing) << NAMED_ITEM("Mode", Frm.Mode) << NAMED_ITEM("TransparentIndex", Frm.TransparentIndex)
-			<< NAMED_ITEM("PixelIndices", Frm.PixelIndices)
-			<< NAMED_ITEM("Palette", Frm.Palette)
+		Record << SA_VALUE("Time", Frm.Time) << SA_VALUE("Index", Frm.Index)
+			<< SA_VALUE("Width", Frm.Width) << SA_VALUE("Height", Frm.Height)
+			<< SA_VALUE("OffsetX", Frm.OffsetX) << SA_VALUE("OffsetY", Frm.OffsetY)
+			<< SA_VALUE("Interlacing", Frm.Interlacing) << SA_VALUE("Mode", Frm.Mode) << SA_VALUE("TransparentIndex", Frm.TransparentIndex)
+			<< SA_VALUE("PixelIndices", Frm.PixelIndices)
+			<< SA_VALUE("Palette", Frm.Palette)
+			;
+		}
+#else
+	friend void operator<<(FStructuredArchive::FSlot Slot, FGIFFrame& Frm)
+	{
+		FStructuredArchive::FRecord Record = Slot.EnterRecord();
+		Record << SA_VALUE(TEXT("Time"), Frm.Time) << SA_VALUE(TEXT("Index"), Frm.Index)
+			<< SA_VALUE(TEXT("Width"), Frm.Width) << SA_VALUE(TEXT("Height"), Frm.Height)
+			<< SA_VALUE(TEXT("OffsetX"), Frm.OffsetX) << SA_VALUE(TEXT("OffsetY"), Frm.OffsetY)
+			<< SA_VALUE(TEXT("Interlacing"), Frm.Interlacing) << SA_VALUE(TEXT("Mode"), Frm.Mode)
+			<< SA_VALUE(TEXT("TransparentIndex"), Frm.TransparentIndex)
+			<< SA_VALUE(TEXT("PixelIndices"), Frm.PixelIndices)
+			<< SA_VALUE(TEXT("Palette"), Frm.Palette)
 			;
 	}
+#endif
 
 	bool Serialize(FStructuredArchive::FSlot Slot)
 	{
