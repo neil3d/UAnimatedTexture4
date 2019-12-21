@@ -55,12 +55,13 @@ struct FGIFFrame
 	friend void operator<<(FStructuredArchive::FSlot Slot, FGIFFrame& Frm)
 	{
 		FStructuredArchive::FRecord Record = Slot.EnterRecord();
-		Record << SA_VALUE("Time", Frm.Time) << SA_VALUE("Index", Frm.Index)
-			<< SA_VALUE("Width", Frm.Width) << SA_VALUE("Height", Frm.Height)
-			<< SA_VALUE("OffsetX", Frm.OffsetX) << SA_VALUE("OffsetY", Frm.OffsetY)
-			<< SA_VALUE("Interlacing", Frm.Interlacing) << SA_VALUE("Mode", Frm.Mode) << SA_VALUE("TransparentIndex", Frm.TransparentIndex)
-			<< SA_VALUE("PixelIndices", Frm.PixelIndices)
-			<< SA_VALUE("Palette", Frm.Palette)
+		Record << SA_VALUE(TEXT("Time"), Frm.Time) << SA_VALUE(TEXT("Index"), Frm.Index)
+			<< SA_VALUE(TEXT("Width"), Frm.Width) << SA_VALUE(TEXT("Height"), Frm.Height)
+			<< SA_VALUE(TEXT("OffsetX"), Frm.OffsetX) << SA_VALUE(TEXT("OffsetY"), Frm.OffsetY)
+			<< SA_VALUE(TEXT("Interlacing"), Frm.Interlacing) << SA_VALUE(TEXT("Mode"), Frm.Mode)
+			<< SA_VALUE(TEXT("TransparentIndex"), Frm.TransparentIndex)
+			<< SA_VALUE(TEXT("PixelIndices"), Frm.PixelIndices)
+			<< SA_VALUE(TEXT("Palette"), Frm.Palette)
 			;
 		}
 #else
