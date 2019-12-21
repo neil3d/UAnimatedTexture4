@@ -14,6 +14,8 @@
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
 #include "Materials/MaterialExpressionTextureSampleParameter.h"
+#include "Runtime/Launch/Resources/Version.h"
+
 #include "MaterialExpressionTextureSampleParameterAnim.generated.h"
 
 class UTexture;
@@ -31,7 +33,12 @@ class ANIMATEDTEXTURE_API UMaterialExpressionTextureSampleParameterAnim : public
 	//~ End UMaterialExpression Interface
 
 	//~ Begin UMaterialExpressionTextureSampleParameter Interface
+#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION <= 22
+	virtual bool TextureIsValid(UTexture* InTexture) override;
+	virtual const TCHAR* GetRequirements() override;
+#else
 	virtual bool TextureIsValid(UTexture* InTexture, FString& OutMessage) override;
+#endif
 	virtual void SetDefaultTexture() override;
 	//~ End UMaterialExpressionTextureSampleParameter Interface
 };
