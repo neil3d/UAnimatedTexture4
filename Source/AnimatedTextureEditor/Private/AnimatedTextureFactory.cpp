@@ -32,15 +32,15 @@ bool UAnimatedTextureFactory::DoesSupportClass(UClass* Class)
 	return Class == UAnimatedTexture2D::StaticClass();
 }
 
-bool UAnimatedTextureFactory::FactoryCanImport(const FString & Filename)
+bool UAnimatedTextureFactory::FactoryCanImport(const FString& Filename)
 {
 	FString Extension = FPaths::GetExtension(Filename, true);
 
-	return Extension.Compare(TEXT(".gif"), ESearchCase::IgnoreCase);
+	return Extension.Compare(TEXT(".gif"), ESearchCase::IgnoreCase) == 0;
 }
 
-UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject * InParent, FName Name, EObjectFlags Flags, UObject * Context,
-	const TCHAR * Type, const uint8 *& Buffer, const uint8 * BufferEnd, FFeedbackContext * Warn)
+UObject* UAnimatedTextureFactory::FactoryCreateBinary(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context,
+	const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn)
 {
 	check(Type);
 	check(Class == UAnimatedTexture2D::StaticClass());
@@ -93,9 +93,9 @@ UObject * UAnimatedTextureFactory::FactoryCreateBinary(UClass * Class, UObject *
 	return AnimTexture;
 }
 
-extern void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize);
+extern void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8* Buffer, uint32 BufferSize);
 
-UAnimatedTextureSource * UAnimatedTextureFactory::ImportGIF(UObject * InParent, const uint8 * Buffer, uint32 BufferSize)
+UAnimatedTextureSource* UAnimatedTextureFactory::ImportGIF(UObject* InParent, const uint8* Buffer, uint32 BufferSize)
 {
 	UAnimatedGIFDecoder* GIF = NewObject<UAnimatedGIFDecoder>(InParent);
 	LoadGIFBinary(GIF, Buffer, BufferSize);

@@ -8,7 +8,7 @@
 
 extern "C"
 {
-	void GIFFrameLoader(void *data, struct GIF_WHDR *whdr) 
+	void GIFFrameLoader(void* data, struct GIF_WHDR* whdr)
 	{
 		UAnimatedGIFDecoder* OutGIF = (UAnimatedGIFDecoder*)data;
 
@@ -27,9 +27,9 @@ extern "C"
 
 		//-- copy properties
 		if (whdr->time >= 0)
-			Frame.Time = whdr->time*0.01f;	// 1 GIF time units = 10 msec
+			Frame.Time = whdr->time * 0.01f;	// 1 GIF time units = 10 msec
 		else
-			Frame.Time = (-whdr->time - 1)*0.01f;
+			Frame.Time = (-whdr->time - 1) * 0.01f;
 
 		/** [TODO:] the frame is assumed to be inside global bounds,
 				however it might exceed them in some GIFs; fix me. **/
@@ -38,19 +38,19 @@ extern "C"
 		Frame.Height = whdr->fryd;
 		Frame.OffsetX = whdr->frxo;
 		Frame.OffsetY = whdr->fryo;
-		Frame.Interlacing = whdr->intr;
+		Frame.Interlacing = whdr->intr != 0;
 		Frame.Mode = whdr->mode;
 		Frame.TransparentIndex = whdr->tran;
 
 		//-- copy pixel data
-		int NumPixel = Frame.Width*Frame.Height;
+		int NumPixel = Frame.Width * Frame.Height;
 		Frame.PixelIndices.Init(0, NumPixel);
 		FMemory::Memcpy(Frame.PixelIndices.GetData(), whdr->bptr, NumPixel);
 
 		//-- copy pal
 		int PaletteSize = whdr->clrs;
 		Frame.Palette.Init(FColor(0, 0, 0, 255), PaletteSize);
-		for (int i = 0; i < PaletteSize; i++) 
+		for (int i = 0; i < PaletteSize; i++)
 		{
 			FColor& uc = Frame.Palette[i];
 			uc.R = whdr->cpal[i].R;
@@ -60,7 +60,7 @@ extern "C"
 	}
 }// end of "C"
 
-void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8 * Buffer, uint32 BufferSize)
+void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8* Buffer, uint32 BufferSize)
 {
 	int Ret = GIF_Load((void*)Buffer, BufferSize, GIFFrameLoader, 0, (void*)OutGIF, 0L);
 	OutGIF->Import_Finished();
