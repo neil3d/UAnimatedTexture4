@@ -23,7 +23,11 @@ void UAnimatedTextureThumbnailRenderer::GetThumbnailSize(UObject* Object, float 
 	}
 }
 
+#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION > 24
+void UAnimatedTextureThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* Viewport, FCanvas* Canvas, bool bAdditionalViewFamily) 
+#else
 void UAnimatedTextureThumbnailRenderer::Draw(UObject * Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget *, FCanvas * Canvas)
+#endif
 {
 	UAnimatedTexture2D* Texture = Cast<UAnimatedTexture2D>(Object);
 	if (Texture != nullptr && Texture->Resource != nullptr)
