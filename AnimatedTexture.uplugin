@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
   "Version": 1,
-  "VersionName": "0.4.3",
+  "VersionName": "0.4.4",
   "FriendlyName": "Animated Texture with GIF Importer",
   "Description": "Import Animated GIF as a new AnimtedTexture asset type",
   "EngineVersion": "4.25.0",
