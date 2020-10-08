@@ -122,8 +122,8 @@ void UAnimatedGIFDecoder::DecodeFrameToRHI(FTextureResource * RHIResource, FAnma
 
 		//-- write texture
 		uint32 DestPitch = 0;
-		FColor* SrcBuffer = PICT;
-		FColor* DestBuffer = (FColor*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
+		uint8* SrcBuffer = (uint8*)PICT;
+		uint8* DestBuffer = (uint8*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 		if (DestBuffer)
 		{
 			uint32 MaxRow = TexHeight;
