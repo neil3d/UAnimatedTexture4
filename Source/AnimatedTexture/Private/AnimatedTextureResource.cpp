@@ -34,7 +34,7 @@ void FAnimatedTextureResource::InitRHI()
 	);
 
 	//-- create FTextureRHIRef FTexture::TextureRHI
-	uint32 Flags = 0;
+	ETextureCreateFlags Flags = (ETextureCreateFlags)0;
 	uint32 NumMips = 1;
 
 	FRHIResourceCreateInfo CreateInfo;

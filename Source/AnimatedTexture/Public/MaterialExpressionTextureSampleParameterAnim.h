@@ -37,9 +37,9 @@ class ANIMATEDTEXTURE_API UMaterialExpressionTextureSampleParameterAnim : public
 	virtual bool TextureIsValid(UTexture* InTexture) override;
 	virtual const TCHAR* GetRequirements() override;
 #else
-	virtual bool TextureIsValid(UTexture* InTexture, FString& OutMessage) override;
+	virtual bool TextureIsValid(UTexture* InTexture, FString& OutMessage);
 #endif
-	virtual void SetDefaultTexture() override;
+	virtual void SetDefaultTexture();
 	//~ End UMaterialExpressionTextureSampleParameter Interface
 };
 
