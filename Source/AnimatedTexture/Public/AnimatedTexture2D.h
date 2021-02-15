@@ -75,6 +75,8 @@ public:
 	
 	void UpdateFirstFrame();
 
+	void ImportFile(const uint8* Buffer, uint32 BufferSize);
+
 	//~ Begin UTexture Interface.
 	virtual float GetSurfaceWidth() const override;
 	virtual float GetSurfaceHeight() const override;
@@ -117,5 +119,4 @@ protected:
 	UPROPERTY()
 		bool bPlaying = true;
 
-	FAnmatedTextureState AnimState;
 };

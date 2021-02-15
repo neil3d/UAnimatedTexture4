@@ -3,13 +3,9 @@
 #include "AnimatedTextureFactory.h"
 #include "AnimatedTextureEditorModule.h"
 #include "AnimatedTexture2D.h"
-#include "AnimatedTextureSource.h"
-#include "AnimatedGIFDecoder.h"
 
 #include "Runtime/Launch/Resources/Version.h"
-#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION > 21
 #include "Subsystems/ImportSubsystem.h"	// UnrealEd
-#endif
 #include "EditorFramework/AssetImportData.h"	// Engine
 #include "Editor.h"	// UnrealEd
 
@@ -45,11 +41,7 @@ UObject* UAnimatedTextureFactory::FactoryCreateBinary(UClass* Class, UObject* In
 	check(Type);
 	check(Class == UAnimatedTexture2D::StaticClass());
 
-#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION > 21
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->BroadcastAssetPreImport(this, Class, InParent, Name, Type);
-#else
-	FEditorDelegates::OnAssetPreImport.Broadcast(this, Class, InParent, Name, Type);
-#endif
 
 	// if the texture already exists, remember the user settings
 	UAnimatedTexture2D* ExistingTexture = FindObject<UAnimatedTexture2D>(InParent, *Name.ToString());
@@ -68,8 +60,8 @@ UObject* UAnimatedTextureFactory::FactoryCreateBinary(UClass* Class, UObject* In
 		return nullptr;
 	}
 
-	// TODO: attach file blob to AnimTexture object
-
+	// just copy file blob to AnimTexture object
+    AnimTexture->ImportFile(Buffer, BufferEnd-Buffer);
 
 	//Replace the reference for the new texture with the existing one so that all current users still have valid references.
 	RefReplacer.Replace(AnimTexture);

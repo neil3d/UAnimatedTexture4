@@ -1,7 +1,6 @@
 // Copyright 2019 Neil Fang. All Rights Reserved.
 
 #include "AnimatedTexture2D.h"
-#include "AnimatedTextureSource.h"
 #include "AnimatedTextureResource.h"
 
 float UAnimatedTexture2D::GetSurfaceWidth() const
@@ -52,7 +51,7 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 
 	if (ResetAnimState)
 	{
-		AnimState = FAnmatedTextureState();
+		//AnimState = FAnmatedTextureState();
 		//AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
 
@@ -76,6 +75,10 @@ void UAnimatedTexture2D::UpdateFirstFrame()
 	}*/
 }
 
+void UAnimatedTexture2D::ImportFile(const uint8* Buffer, uint32 BufferSize) {
+  this->FileBlob = TArray<uint8>(Buffer, BufferSize);
+}
+
 void UAnimatedTexture2D::Play()
 {
 	bPlaying = true;
@@ -83,7 +86,7 @@ void UAnimatedTexture2D::Play()
 
 void UAnimatedTexture2D::PlayFromStart()
 {
-	AnimState = FAnmatedTextureState();
+	//AnimState = FAnmatedTextureState();
 	bPlaying = true;
 }
 

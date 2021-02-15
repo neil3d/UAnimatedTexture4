@@ -2,7 +2,6 @@
 
 #include "AnimatedTextureResource.h"
 #include "AnimatedTexture2D.h"
-#include "AnimatedTextureSource.h"
 
 #include "DeviceProfiles/DeviceProfile.h"	// Engine
 #include "DeviceProfiles/DeviceProfileManager.h"	// Engine
