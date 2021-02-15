@@ -94,13 +94,13 @@ float UAnimatedTexture2D::RenderFrameToTexture()
 	struct FRenderCommandData
 	{
 		FTextureResource* RHIResource;
-		const FColor* FrameBuffer;
+		const uint8* FrameBuffer;
 	};
 
 	typedef TSharedPtr<FRenderCommandData, ESPMode::ThreadSafe> FCommandDataPtr;
 	FCommandDataPtr CommandData = MakeShared<FRenderCommandData, ESPMode::ThreadSafe>();
 	CommandData->RHIResource = Resource;
-	CommandData->FrameBuffer = (const FColor*)(GIFDecoder->getFrameBuffer());
+	CommandData->FrameBuffer = (const uint8*)(GIFDecoder->getFrameBuffer());
 
 	//-- equeue render command
 	ENQUEUE_RENDER_COMMAND(GIF_RenderFrameToTexture)(
@@ -115,34 +115,14 @@ float UAnimatedTexture2D::RenderFrameToTexture()
 
 			uint32 TexWidth = Texture2DRHI->GetSizeX();
 			uint32 TexHeight = Texture2DRHI->GetSizeY();
-			uint32 DestPitch = 0;
-			const uint8* SrcBuffer = (const uint8*)CommandData->FrameBuffer;
-			uint8* DestBuffer = (uint8*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
-			if (DestBuffer)
-			{
-				if (DestPitch == TexWidth * sizeof(FColor))
-				{
-					FMemory::Memcpy(DestBuffer, SrcBuffer, DestPitch * TexHeight);
-				}
-				else
-				{
-					// copy row by row
-					uint32 SrcPitch = TexWidth * sizeof(FColor);
-					uint32 Pitch = FMath::Min(DestPitch, SrcPitch);
-					for (uint32 y = 0; y < TexHeight; y++)
-					{
-						FMemory::Memcpy(DestBuffer, SrcBuffer, Pitch);
-						DestBuffer += DestPitch;
-						SrcBuffer += SrcPitch;
-					}// end of for
-				}// end of else
+			uint32 SrcPitch = TexWidth * sizeof(FColor);
+			
+			FUpdateTextureRegion2D Region;
+			Region.SrcX = Region.SrcY = Region.DestX = Region.DestY = 0;
+			Region.Width = TexWidth;
+			Region.Height = TexHeight;
 
-				RHIUnlockTexture2D(Texture2DRHI, 0, false);
-			}// end of if
-			else
-			{
-				UE_LOG(LogAnimTexture, Warning, TEXT("Unable to lock texture for write"));
-			}// end of else
+			RHIUpdateTexture2D(Texture2DRHI, 0, Region, SrcPitch, CommandData->FrameBuffer);
 		});
 
 	return nFrameDelay / 1000.0f;
