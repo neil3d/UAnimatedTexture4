@@ -32,11 +32,11 @@ void FAnimatedTextureResource::InitRHI()
 	);
 
 	//-- create FTextureRHIRef FTexture::TextureRHI
-	ETextureCreateFlags Flags = (ETextureCreateFlags)0;
+	const uint32 CreateFlags = TexCreate_Dynamic | TexCreate_ShaderResource | TexCreate_CPUWritable | TexCreate_DisableDCC;
 	uint32 NumMips = 1;
 
 	FRHIResourceCreateInfo CreateInfo;
-	TextureRHI = RHICreateTexture2D(GetSizeX(), GetSizeY(), PF_B8G8R8A8, NumMips, 1, Flags, CreateInfo);
+	TextureRHI = RHICreateTexture2D(GetSizeX(), GetSizeY(), PF_B8G8R8A8, NumMips, 1, CreateFlags, CreateInfo);
 	TextureRHI->SetName(Owner->GetFName());
 
 	RHIUpdateTextureReference(Owner->TextureReference.TextureReferenceRHI, TextureRHI);
@@ -59,7 +59,7 @@ void FAnimatedTextureResource::CreateSamplerStates(float MipMapBias)
 {
 	FSamplerStateInitializerRHI SamplerStateInitializer
 	(
-		(ESamplerFilter)UDeviceProfileManager::Get().GetActiveProfile()->GetTextureLODSettings()->GetSamplerFilter(Owner),
+		SF_Bilinear,
 		Owner->AddressX == TA_Wrap ? AM_Wrap : (Owner->AddressX == TA_Clamp ? AM_Clamp : AM_Mirror),
 		Owner->AddressY == TA_Wrap ? AM_Wrap : (Owner->AddressY == TA_Clamp ? AM_Clamp : AM_Mirror),
 		AM_Wrap,
@@ -69,7 +69,7 @@ void FAnimatedTextureResource::CreateSamplerStates(float MipMapBias)
 
 	FSamplerStateInitializerRHI DeferredPassSamplerStateInitializer
 	(
-		(ESamplerFilter)UDeviceProfileManager::Get().GetActiveProfile()->GetTextureLODSettings()->GetSamplerFilter(Owner),
+		SF_Bilinear,
 		Owner->AddressX == TA_Wrap ? AM_Wrap : (Owner->AddressX == TA_Clamp ? AM_Clamp : AM_Mirror),
 		Owner->AddressY == TA_Wrap ? AM_Wrap : (Owner->AddressY == TA_Clamp ? AM_Clamp : AM_Mirror),
 		AM_Wrap,

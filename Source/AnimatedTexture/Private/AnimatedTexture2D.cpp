@@ -120,17 +120,16 @@ float UAnimatedTexture2D::RenderFrameToTexture()
 			uint8* DestBuffer = (uint8*)RHILockTexture2D(Texture2DRHI, 0, RLM_WriteOnly, DestPitch, false);
 			if (DestBuffer)
 			{
-				uint32 MaxRow = TexHeight;
 				if (DestPitch == TexWidth * sizeof(FColor))
 				{
-					FMemory::Memcpy(DestBuffer, SrcBuffer, DestPitch * MaxRow);
+					FMemory::Memcpy(DestBuffer, SrcBuffer, DestPitch * TexHeight);
 				}
 				else
 				{
 					// copy row by row
 					uint32 SrcPitch = TexWidth * sizeof(FColor);
 					uint32 Pitch = FMath::Min(DestPitch, SrcPitch);
-					for (uint32 y = 0; y < MaxRow; y++)
+					for (uint32 y = 0; y < TexHeight; y++)
 					{
 						FMemory::Memcpy(DestBuffer, SrcBuffer, Pitch);
 						DestBuffer += DestPitch;
