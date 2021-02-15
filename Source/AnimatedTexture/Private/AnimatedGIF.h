@@ -22,9 +22,9 @@
 class FAnimatedGIF {
  public:
   struct Pixel {
-    uint8_t R;
-    uint8_t G;
     uint8_t B;
+    uint8_t G;
+    uint8_t R;
     uint8_t A;
   };
   FAnimatedGIF() = default;
@@ -36,7 +36,7 @@ class FAnimatedGIF {
   /**
    * @return frame delay in milliseconds
    */
-  int playFrame(int defaultFrameDelay);
+  int playFrame(int defaultFrameDelay, bool bLooping);
   void reset() {
       mCurrentFrame = 0; mLoopCount = 0; mDoNotDispose = false;
   }
@@ -46,6 +46,7 @@ class FAnimatedGIF {
   const Pixel* getFrameBuffer() const;
 
   int getDuration(int defaultFrameDelay) const;
+  bool supportsTransparency() const;
 
  private:
   void _clearFrameBuffer(ColorMapObject* colorMap, bool bTransparent);

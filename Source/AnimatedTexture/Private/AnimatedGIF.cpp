@@ -44,7 +44,7 @@ void FAnimatedGIF::close() {
   mFrameBuffer.clear();
 }
 
-int FAnimatedGIF::playFrame(int defaultFrameDelay) {
+int FAnimatedGIF::playFrame(int defaultFrameDelay, bool bLooping) {
   if (!mGIF) return defaultFrameDelay;
 
   const SavedImage& image = mGIF->SavedImages[mCurrentFrame];
@@ -128,7 +128,7 @@ int FAnimatedGIF::playFrame(int defaultFrameDelay) {
   mCurrentFrame++;
   if (mCurrentFrame >= mGIF->ImageCount) {
     mDoNotDispose = false;
-    mCurrentFrame = 0;
+    mCurrentFrame = bLooping?0: mGIF->ImageCount-1;
     mLoopCount++;
     std::cout << "loop count = " << mLoopCount << std::endl;
   }
@@ -164,9 +164,9 @@ int FAnimatedGIF::getDuration(int defaultFrameDelay) const
     {
         const SavedImage& image = mGIF->SavedImages[i];
         int delayTime = 0;
-        for (int i = 0; i < image.ExtensionBlockCount; i++) 
+        for (int j = 0; j < image.ExtensionBlockCount; j++) 
         {
-            const ExtensionBlock& eb = image.ExtensionBlocks[i];
+            const ExtensionBlock& eb = image.ExtensionBlocks[j];
             if (eb.Function == GRAPHICS_EXT_FUNC_CODE) 
             {
                 GraphicsControlBlock gcb;
@@ -178,6 +178,31 @@ int FAnimatedGIF::getDuration(int defaultFrameDelay) const
     }
 
     return duration;
+}
+
+bool FAnimatedGIF::supportsTransparency() const
+{
+    if (!mGIF)
+        return false;
+
+    for (int i = 0; i < mGIF->ImageCount; i++)
+    {
+        const SavedImage& image = mGIF->SavedImages[i];
+        for (int j = 0; j < image.ExtensionBlockCount; j++)
+        {
+            const ExtensionBlock& eb = image.ExtensionBlocks[j];
+            if (eb.Function == GRAPHICS_EXT_FUNC_CODE)
+            {
+                GraphicsControlBlock gcb;
+                if (DGifExtensionToGCB(eb.ByteCount, eb.Bytes, &gcb) != GIF_ERROR)
+                {
+                    if (gcb.TransparentColor != NO_TRANSPARENT_COLOR)
+                        return true;
+                }
+            }
+        }// end of for(ext)
+    }
+    return false;
 }
 
 void FAnimatedGIF::_clearFrameBuffer(ColorMapObject* colorMap,

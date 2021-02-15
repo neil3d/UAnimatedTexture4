@@ -10,6 +10,7 @@ This plugin allows you to import animated GIF into your Unreal Engine 4 project 
 ## Features
 
 * Import Animated GIF as a Texture, supports animation, transparency, interlace, etc
+* Runtime load .gif file from disk or download from web
 * Editing in default Texture Editor
 * Supports UMG Image widget and Material
 * Playback API
