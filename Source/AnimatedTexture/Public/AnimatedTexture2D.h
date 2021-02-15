@@ -15,7 +15,6 @@
 #include "Tickable.h"	// Engine
 #include "Engine/Texture.h"	// Engine
 
-#include "AnimatedTextureSource.h"
 #include "AnimatedTexture2D.generated.h"
 
 /**
@@ -73,8 +72,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
 		float GetAnimationLength() const;
 
-	void SetAnimSource(UAnimatedTextureSource* InAnimSource);
-	UAnimatedTextureSource* GetAnimSource() const { return AnimSource; }
+	
 	void UpdateFirstFrame();
 
 	//~ Begin UTexture Interface.
@@ -113,8 +111,8 @@ public:
 	//~ End UObject Interface.
 
 protected:
-	UPROPERTY()
-		UAnimatedTextureSource* AnimSource;
+    UPROPERTY()
+        TArray<uint8> FileBlob;
 
 	UPROPERTY()
 		bool bPlaying = true;

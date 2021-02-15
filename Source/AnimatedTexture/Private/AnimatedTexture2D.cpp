@@ -6,16 +6,12 @@
 
 float UAnimatedTexture2D::GetSurfaceWidth() const
 {
-	if (AnimSource)
-		return AnimSource->GetGlobalWidth();
-	return 2.0f;
+	return 1.0f;
 }
 
 float UAnimatedTexture2D::GetSurfaceHeight() const
 {
-	if (AnimSource)
-		return AnimSource->GetGlobalHeight();
-	return 2.0f;
+	return 1.0f;
 }
 
 FTextureResource* UAnimatedTexture2D::CreateResource()
@@ -29,10 +25,6 @@ void UAnimatedTexture2D::Tick(float DeltaTime)
 	if (!bPlaying)
 		return;
 
-	if (AnimSource && Resource) {
-		if (AnimSource->TickAnim(DeltaTime*PlayRate, AnimState, DefaultFrameDelay, bLooping))
-			AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
-	}
 }
 
 
@@ -61,7 +53,7 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 	if (ResetAnimState)
 	{
 		AnimState = FAnmatedTextureState();
-		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
+		//AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
 	}
 
 	if (RequiresNotifyMaterials)
@@ -71,28 +63,17 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent & Property
 
 float UAnimatedTexture2D::GetAnimationLength() const
 {
-	if (AnimSource)
-		return AnimSource->GetTotalDuration();
 
 	return 0.0f;
 }
 
-void UAnimatedTexture2D::SetAnimSource(UAnimatedTextureSource* InAnimSource) {
-	AnimSource = InAnimSource;
-	AnimState = FAnmatedTextureState();
-
-	if (Resource)
-		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
-	UpdateResource();
-}
-
 void UAnimatedTexture2D::UpdateFirstFrame()
 {
-	if (AnimSource && Resource) 
+	/*if (AnimSource && Resource) 
 	{
 		AnimState = FAnmatedTextureState();
 		AnimSource->DecodeFrameToRHI(Resource, AnimState, SupportsTransparency);
-	}
+	}*/
 }
 
 void UAnimatedTexture2D::Play()

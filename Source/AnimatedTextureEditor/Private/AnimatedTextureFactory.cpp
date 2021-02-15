@@ -68,36 +68,16 @@ UObject* UAnimatedTextureFactory::FactoryCreateBinary(UClass* Class, UObject* In
 		return nullptr;
 	}
 
-	// load gif file
-	UAnimatedTextureSource* GIFSource = ImportGIF(InParent, Buffer, BufferEnd - Buffer);
-	if (GIFSource) {
-		AnimTexture->SetAnimSource(GIFSource);
-	}
-	else {
-		UE_LOG(LogAnimTextureEditor, Error, TEXT("Import GIF FAILED, Name=%s."), *(Name.ToString()));
-		return nullptr;
-	}
+	// TODO: attach file blob to AnimTexture object
+
 
 	//Replace the reference for the new texture with the existing one so that all current users still have valid references.
 	RefReplacer.Replace(AnimTexture);
 
-#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION > 21
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->BroadcastAssetPostImport(this, AnimTexture);
-#else
-	FEditorDelegates::OnAssetPostImport.Broadcast(this, AnimTexture);
-#endif
 
 	// Invalidate any materials using the newly imported texture. (occurs if you import over an existing texture)
 	AnimTexture->PostEditChange();
 
 	return AnimTexture;
-}
-
-extern void LoadGIFBinary(UAnimatedGIFDecoder* OutGIF, const uint8* Buffer, uint32 BufferSize);
-
-UAnimatedTextureSource* UAnimatedTextureFactory::ImportGIF(UObject* InParent, const uint8* Buffer, uint32 BufferSize)
-{
-	UAnimatedGIFDecoder* GIF = NewObject<UAnimatedGIFDecoder>(InParent);
-	LoadGIFBinary(GIF, Buffer, BufferSize);
-	return GIF;
 }

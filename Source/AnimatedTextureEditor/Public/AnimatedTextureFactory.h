@@ -16,7 +16,6 @@
 #include "AnimatedTextureFactory.generated.h"
 
 class UAnimatedTexture2D;
-class UAnimatedTextureSource;
 
 /**
  * Import & Reimport Animated Texture Source, such as .gif file
@@ -32,7 +31,4 @@ public:
 	virtual bool FactoryCanImport(const FString& Filename) override;
 	virtual UObject* FactoryCreateBinary(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, const TCHAR* Type, const uint8*& Buffer, const uint8* BufferEnd, FFeedbackContext* Warn) override;
 	//~ End UFactory Interface
-
-protected:
-	UAnimatedTextureSource* ImportGIF(UObject * InParent, const uint8* Buffer, uint32 BufferSize);
 };

@@ -48,42 +48,6 @@ void UMaterialExpressionTextureSampleParameterAnim::GetCaption(TArray<FString>& 
 }
 #endif // WITH_EDITOR
 
-#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION <= 22
-bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InTexture)
-{
-	bool Result = false;
-	if (InTexture)
-	{
-		if (InTexture->IsA(UAnimatedTexture2D::StaticClass()))
-		{
-			Result = true;
-		}
-
-		if (InTexture->IsA(UTexture2D::StaticClass()))
-		{
-			Result = true;
-		}
-		if (InTexture->IsA(UTextureRenderTarget2D::StaticClass()))
-		{
-			Result = true;
-		}
-		if (InTexture->IsA(UTexture2DDynamic::StaticClass()))
-		{
-			Result = true;
-		}
-		if (InTexture->GetMaterialType() == MCT_TextureExternal)
-		{
-			Result = true;
-		}
-	}
-	return Result;
-}
-
-const TCHAR* UMaterialExpressionTextureSampleParameterAnim::GetRequirements()
-{
-	return TEXT("Requires AnimatedTexture2D");
-}
-#else
 bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InTexture, FString& OutMessage)
 {
 	bool Result = false;
@@ -121,7 +85,6 @@ bool UMaterialExpressionTextureSampleParameterAnim::TextureIsValid(UTexture* InT
 
 	return Result;
 }
-#endif
 
 void UMaterialExpressionTextureSampleParameterAnim::SetDefaultTexture()
 {

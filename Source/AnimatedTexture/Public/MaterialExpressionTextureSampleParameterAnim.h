@@ -26,19 +26,14 @@ class ANIMATEDTEXTURE_API UMaterialExpressionTextureSampleParameterAnim : public
 	GENERATED_UCLASS_BODY()
 
 
-		//~ Begin UMaterialExpression Interface
+	//~ Begin UMaterialExpression Interface
 #if WITH_EDITOR
 		virtual void GetCaption(TArray<FString>& OutCaptions) const override;
 #endif // WITH_EDITOR
 	//~ End UMaterialExpression Interface
 
 	//~ Begin UMaterialExpressionTextureSampleParameter Interface
-#if ENGINE_MAJOR_VERSION <= 4 && ENGINE_MINOR_VERSION <= 22
-	virtual bool TextureIsValid(UTexture* InTexture) override;
-	virtual const TCHAR* GetRequirements() override;
-#else
 	virtual bool TextureIsValid(UTexture* InTexture, FString& OutMessage);
-#endif
 	virtual void SetDefaultTexture();
 	//~ End UMaterialExpressionTextureSampleParameter Interface
 };

@@ -16,7 +16,6 @@
 #include "ReimportAnimatedTextureFactory.generated.h"
 
 class UAnimatedTexture2D;
-class UAnimatedTextureSource;
 
 /**
  * Reimport Animated Texture Source
