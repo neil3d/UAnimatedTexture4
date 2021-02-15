@@ -1,3 +1,14 @@
+/**
+ * Copyright 2019 Neil Fang. All Rights Reserved.
+ *
+ * Animated Texture from GIF file
+ *
+ * Created by Neil Fang
+ * GitHub Repo: https://github.com/neil3d/UnrealAnimatedTexturePlugin
+ * GitHub Page: http://neil3d.github.io
+ *
+ */
+
 #pragma once
 #include <string>
 #include <vector>
@@ -26,10 +37,15 @@ class FAnimatedGIF {
    * @return frame delay in milliseconds
    */
   int playFrame(int defaultFrameDelay);
+  void reset() {
+      mCurrentFrame = 0; mLoopCount = 0; mDoNotDispose = false;
+  }
 
   int getWidth() const;
   int getHeight() const;
   const Pixel* getFrameBuffer() const;
+
+  int getDuration(int defaultFrameDelay) const;
 
  private:
   void _clearFrameBuffer(ColorMapObject* colorMap, bool bTransparent);
@@ -37,12 +53,12 @@ class FAnimatedGIF {
                        ColorMapObject* colorMap, bool bTransparent);
 
  private:
-  GifFileType* mGIF = nullptr;
   int mCurrentFrame = 0;
   int mLoopCount = 0;
-  std::vector<Pixel> mFrameBuffer;
   bool mDoNotDispose = false;
 
+  GifFileType* mGIF = nullptr;
+  std::vector<Pixel> mFrameBuffer;
  public:
   FAnimatedGIF(const FAnimatedGIF&) = delete;
   FAnimatedGIF& operator=(const FAnimatedGIF&) = delete;

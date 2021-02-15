@@ -1,3 +1,5 @@
+// Copyright 2019 Neil Fang. All Rights Reserved.
+
 #include "AnimatedGIF.h"
 
 #include <iostream>
@@ -150,6 +152,32 @@ int FAnimatedGIF::getHeight() const {
 
 const FAnimatedGIF::Pixel* FAnimatedGIF::getFrameBuffer() const {
   return mFrameBuffer.data();
+}
+
+int FAnimatedGIF::getDuration(int defaultFrameDelay) const
+{
+    if (!mGIF)
+        return 0;
+
+    int duration = 0;
+    for (int i = 0; i < mGIF->ImageCount; i++)
+    {
+        const SavedImage& image = mGIF->SavedImages[i];
+        int delayTime = 0;
+        for (int i = 0; i < image.ExtensionBlockCount; i++) 
+        {
+            const ExtensionBlock& eb = image.ExtensionBlocks[i];
+            if (eb.Function == GRAPHICS_EXT_FUNC_CODE) 
+            {
+                GraphicsControlBlock gcb;
+                if (DGifExtensionToGCB(eb.ByteCount, eb.Bytes, &gcb) != GIF_ERROR)
+                    delayTime = gcb.DelayTime * 10;  // 1/100 second
+            }
+        }// end of for(ext)
+        duration += delayTime == 0 ? defaultFrameDelay : delayTime;
+    }
+
+    return duration;
 }
 
 void FAnimatedGIF::_clearFrameBuffer(ColorMapObject* colorMap,

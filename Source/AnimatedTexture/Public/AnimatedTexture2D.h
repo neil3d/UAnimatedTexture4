@@ -17,6 +17,8 @@
 
 #include "AnimatedTexture2D.generated.h"
 
+class FAnimatedGIF;
+
 /**
  *
  */
@@ -72,7 +74,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = AnimatedTexture)
 		float GetAnimationLength() const;
 
-	
+
 	void UpdateFirstFrame();
 
 	void ImportFile(const uint8* Buffer, uint32 BufferSize);
@@ -109,12 +111,20 @@ public:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif // WITH_EDITOR
-	
 	//~ End UObject Interface.
 
 protected:
-    UPROPERTY()
-        TArray<uint8> FileBlob;
+	float RenderFrameToTexture();
+
+protected:
+	float AnimationLength = 0.0f;
+	float FrameDelay = 0.0f;
+	float FrameTime = 0.0f;
+
+	TSharedPtr<FAnimatedGIF, ESPMode::ThreadSafe> GIFDecoder;
+
+	UPROPERTY()
+		TArray<uint8> FileBlob;
 
 	UPROPERTY()
 		bool bPlaying = true;
