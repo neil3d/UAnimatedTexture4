@@ -28,6 +28,8 @@ uint32 FAnimatedTextureResource::GetSizeY() const
 
 void FAnimatedTextureResource::InitRHI()
 {
+	bIgnoreGammaConversions = true;
+
 	//-- create FSamplerStateRHIRef FTexture::SamplerStateRHI
 	CreateSamplerStates(
 		GetDefaultMipMapBias()

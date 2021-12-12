@@ -4,7 +4,7 @@
   "VersionName": "0.4.5",
   "FriendlyName": "Animated Texture with GIF Importer",
   "Description": "Import Animated GIF as a new AnimtedTexture asset type",
-  "EngineVersion": "4.25.0",
+  "EngineVersion": "4.26.0",
   "Category": "Rendering",
   "CreatedBy": "neil3d",
   "CreatedByURL": "http://neil3d.github.io",
