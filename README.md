@@ -1,7 +1,6 @@
 # Animated Texture with GIF Importer
 
 - New Version for UE5: https://github.com/neil3d/UAnimatedTexture5  
-- **Demo Project:** [AnimatedGIFDemo](https://github.com/neil3d/UnrealCookBook/tree/master/AnimatedGIFDemo)    
 - **中文文档:** [https://neil3d.github.io/coding/anim-texture.html](https://neil3d.github.io/coding/anim-texture.html)
 
 ----
