@@ -18,6 +18,7 @@ class UAnimatedTexture2D;
 
 /**
  * FTextureResource implementation for animated 2D textures
+ * @see class FTexture2DDynamicResource
  */
 class FAnimatedTextureResource : public FTextureResource
 {

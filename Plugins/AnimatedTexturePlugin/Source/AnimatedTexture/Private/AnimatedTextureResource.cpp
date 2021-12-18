@@ -32,7 +32,7 @@ void FAnimatedTextureResource::InitRHI()
 	);
 
 	//-- create FTextureRHIRef FTexture::TextureRHI
-	const uint32 CreateFlags = TexCreate_Dynamic | TexCreate_ShaderResource | TexCreate_CPUWritable | TexCreate_DisableDCC;
+	const ETextureCreateFlags CreateFlags = TexCreate_Dynamic | TexCreate_ShaderResource | TexCreate_CPUWritable | TexCreate_DisableDCC;
 	uint32 NumMips = 1;
 
 	FRHIResourceCreateInfo CreateInfo;
