@@ -60,7 +60,7 @@ void UAnimatedTexture2D::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 	bool RequiresNotifyMaterials = false;
 	bool ResetAnimState = false;
 
-	UProperty* PropertyThatChanged = PropertyChangedEvent.Property;
+	FProperty* PropertyThatChanged = PropertyChangedEvent.Property;
 	if (PropertyThatChanged)
 	{
 		const FName PropertyName = PropertyThatChanged->GetFName();
