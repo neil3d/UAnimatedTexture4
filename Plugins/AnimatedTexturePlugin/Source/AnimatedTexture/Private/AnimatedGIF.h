@@ -13,7 +13,10 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
 #include "giflib/gif_lib.h"
+}
 
 /**
  * GIFLIB decoder wrapper class
