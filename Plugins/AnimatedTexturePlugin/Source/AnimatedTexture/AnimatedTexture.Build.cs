@@ -26,5 +26,6 @@ public class AnimatedTexture : ModuleRules
                 "RenderCore",
             }
             );
+        PublicDefinitions.Add("_CRT_HAS_CXX17=0");
     }
 }
