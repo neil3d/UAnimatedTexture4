@@ -80,8 +80,11 @@ public:
 	void ImportFile(const uint8* Buffer, uint32 BufferSize);
 
 	//~ Begin UTexture Interface.
+	virtual ETextureClass GetTextureClass() const override { return ETextureClass::TwoD; }
 	virtual float GetSurfaceWidth() const override;
 	virtual float GetSurfaceHeight() const override;
+	virtual float GetSurfaceDepth() const override {return 0.0f;}
+	virtual uint32 GetSurfaceArraySize() const override {return 0;}
 	virtual FTextureResource* CreateResource() override;
 	virtual EMaterialValueType GetMaterialType() const override { return MCT_Texture2D; }
 	//~ End UTexture Interface.

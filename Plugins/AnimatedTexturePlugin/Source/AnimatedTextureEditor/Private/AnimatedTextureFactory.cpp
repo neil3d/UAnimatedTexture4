@@ -3,7 +3,7 @@
 #include "AnimatedTextureFactory.h"
 #include "AnimatedTextureEditorModule.h"
 #include "AnimatedTexture2D.h"
-
+#include "TextureReferenceResolver.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "Subsystems/ImportSubsystem.h"	// UnrealEd
 #include "EditorFramework/AssetImportData.h"	// Engine
