@@ -28,7 +28,7 @@ public:
 	//~ Begin FTextureResource Interface.
 	virtual uint32 GetSizeX() const override;
 	virtual uint32 GetSizeY() const override;
-	virtual void InitRHI() override;
+	virtual void InitRHI(FRHICommandListBase& RHICmdList) override;
 	virtual void ReleaseRHI() override;
 	//~ End FTextureResource Interface.
 
